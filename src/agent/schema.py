@@ -4,7 +4,7 @@ ProcurementContext、UserPreferences、ChatRequest 等 Pydantic 模型
 定义整个项目中流转的数据结构。这是类型安全的保障——所有请求、响应、上下文都通过这些模型约束。
 """
 from typing import Optional, List, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, AliasChoices, ConfigDict, model_validator
 from datetime import datetime
 from enum import Enum
 
@@ -37,9 +37,29 @@ class ChatRequest(BaseModel):
     username: str = Field(default="用户", description="用户名")
 
 
+class ApprovalDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["approve", "reject"]
+    message: str | None = None
+
+
+class ResumePayload(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    decisions: list[ApprovalDecision] | None = Field(default=None, min_length=1)
+    supplement: str | None = Field(default=None, min_length=1)
+
+    @model_validator(mode="after")
+    def one_kind(self):
+        if (self.decisions is None) == (self.supplement is None):
+            raise ValueError("提供 decisions 或 supplement，且只能提供一种")
+        return self
+
+
 class ResumeRequest(BaseModel):
-    """中断恢复请求模型"""
-    resume: dict = Field(..., description="恢复数据，格式取决于中断类型")
+    """Canonical frontend field is resume_data; resume is a legacy alias."""
+    model_config = ConfigDict(extra="forbid")
+    resume_data: ResumePayload = Field(validation_alias=AliasChoices("resume_data", "resume"))
+
 
 
 class SSEEvent(BaseModel):

@@ -9,10 +9,11 @@ from typing import Optional
 from pathlib import Path
 
 from deepagents import create_deep_agent, RubricMiddleware
-from deepagents.backends import CompositeBackend, StoreBackend, LocalShellBackend
+from deepagents.backends import CompositeBackend, StoreBackend, StateBackend
 from langchain.agents.middleware import (
     ModelCallLimitMiddleware,
     ToolCallLimitMiddleware,
+    TodoListMiddleware,
 )
 
 from .config import (
@@ -29,7 +30,7 @@ from .memory.prompts import MAIN_SYSTEM_PROMPT, MEMORY_USAGE_PROMPT
 
 # 项目路径
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-SKILLS_DIR = PROJECT_ROOT / "src" / "skills"
+SKILLS_DIR = PROJECT_ROOT / "src" / "skills" / "erpnext"
 MEMORY_DIR = Path(__file__).parent / "memory"
 
 
@@ -221,29 +222,11 @@ def create_main_agent(
     # Manager 负责用户级领取/恢复/重建；Proxy 保持 Agent 已持有的后端引用稳定。
     sandbox_manager_instance = None
     managed_sandbox = False
-    try:
-        from .backends.sandbox_manager import sandbox_manager
-        from .backends.sandbox_proxy import SandboxBackendProxy
-        from .backends.sandbox_holder import set_sandbox
-
-        raw_sandbox = sandbox_manager.get_sandbox(user_context.user_id)
-        sandbox_backend = SandboxBackendProxy(raw_sandbox)
-        bootstrap_sandbox(sandbox_backend)
-        sandbox_manager_instance = sandbox_manager
-        managed_sandbox = True
-        # 注册的是稳定 Proxy，而不是会在重建后失效的原始 Docker 连接。
-        set_sandbox(sandbox_backend, user_context.user_id)
-        agent_logger.info(
-            f"Using managed Docker sandbox for {user_context.user_id}: "
-            f"{sandbox_backend.container_name}"
-        )
-    except Exception as e:
-        agent_logger.warning(
-            f"Managed Docker sandbox unavailable ({e}), falling back to LocalShell"
-        )
-        sandbox_backend = LocalShellBackend(virtual_mode=True)
-        from .backends.sandbox_holder import set_sandbox
-        set_sandbox(None, user_context.user_id)
+    # Phase one deliberately has no command executor or host filesystem backend.
+    # StateBackend stores virtual files in LangGraph checkpoint state.
+    sandbox_backend = StateBackend()
+    from .backends.sandbox_holder import set_sandbox
+    set_sandbox(None, user_context.user_id)
 
     # deepagents >= 0.7 要求传入已初始化的 Backend 实例，
     # 不再接受旧版的 backend factory。
@@ -262,24 +245,15 @@ def create_main_agent(
 
     # ===== 3. 加载工具 =====
     from .tools.mcp_client import load_mcp_tools_sync
-    from .tools.chart_generator import generate_chart
-    from .tools.web_search import web_search
-    from .tools.web_fetch import web_fetch, install_skill
-    from .tools.skill_management import list_user_skills
-    from .tools.hitl_tools import request_order_info
-    from .tools.download_sandbox_file import download_sandbox_file, list_sandbox_files
-    from .tools.document_generator import generate_document, generate_table_report
-
-    mcp_tools = load_mcp_tools_sync()
-    custom_tools = [generate_chart, web_search, web_fetch, install_skill, list_user_skills, request_order_info,
-                    download_sandbox_file, list_sandbox_files,
-                    generate_document, generate_table_report]
+    from .tool_policy import select_tools, ReadOnlyToolPolicy
+    mcp_tools = select_tools(load_mcp_tools_sync())
+    custom_tools = []
 
     # 三层记忆：COLD 层按需检索 + 显式写入（WARM 层已在系统提示词里常驻注入）
     if DEFAULT_MEMORY_CONFIG.memory_tools_enabled:
         from .tools.memory_tools import read_memory, remember
         custom_tools.extend([read_memory, remember])
-    all_tools = mcp_tools + custom_tools
+    all_tools = select_tools(mcp_tools + custom_tools)
 
     # Prompt disclosure is independent from physical sandbox file synchronization.
     from .progressive_skills import (
@@ -299,7 +273,15 @@ def create_main_agent(
     from .subagents.loader import load_subagent_configs, resolve_subagent_tools, get_delegation_context_prompt
     subagent_configs = load_subagent_configs()
     subagents = resolve_subagent_tools(subagent_configs, all_tools)
+    # Override DeepAgents' automatic general-purpose worker so it receives
+    # the same execution-time policy as the named procurement specialists.
+    subagents.append({"name": "general-purpose", "description": "通用只读辅助任务",
+                      "system_prompt": "仅使用阶段一允许的只读工具；不得执行真实 ERP 写入或命令。",
+                      "tools": select_tools(all_tools)})
     attach_to_subagents(subagents, skill_catalog, skill_read_tools)
+    for spec in subagents:
+        spec["tools"] = select_tools(spec["tools"])
+        spec.setdefault("middleware", []).append(ReadOnlyToolPolicy())
     # 生成委派上下文协议（注入主 Agent 提示词）
     delegation_prompt = get_delegation_context_prompt(subagent_configs)
 
@@ -328,8 +310,9 @@ def create_main_agent(
     # 注意：create_deep_agent 内部已自动添加：
     # - SummarizationMiddleware（自动摘要 + compact_conversation 工具）
     # - FilesystemMiddleware, SkillsMiddleware, SubAgentMiddleware
-    # - TodoListMiddleware, PatchToolCallsMiddleware, MemoryMiddleware
-    # 我们只需添加自定义中间件 + 调用限制
+    # - PatchToolCallsMiddleware, MemoryMiddleware
+    # TodoListMiddleware is explicitly registered for the pinned DeepAgents version.
+    # 项目额外注册 Planning、自定义中间件和调用限制
     # 沙箱重建后不仅替换底层 Docker 连接，还要重新填充项目、基础 Skills 和
     # 用户持久化 Skills。两个中间件持有同一个稳定 Proxy，缓存必须一起失效。
     skills_sync_middleware = SkillsSyncMiddleware(
@@ -351,6 +334,8 @@ def create_main_agent(
         user_skills_restore_middleware.restore_now()
 
     middlewares = [
+        ReadOnlyToolPolicy(),
+        TodoListMiddleware(),
         # --- 自定义中间件（执行顺序 1→7）---
         SandboxHealthMiddleware(
             sandbox_manager=sandbox_manager_instance,
@@ -392,6 +377,9 @@ def create_main_agent(
     if delegation_prompt:
         system_prompt += delegation_prompt
 
+    system_prompt += "\n" + (Path(__file__).parent / "phase1_guide.md").read_text(encoding="utf-8")
+    system_prompt += "\n阶段一：仅可读取 ERPNext 数据；不可创建、修改、提交或取消单据。没有命令执行、下载或安装能力。Supplier/Item 为共享主数据；Warehouse/Bin 按公司和仓库白名单；采购订单表头按公司和 Frappe 权限。旧 Skill 中 Java ERP 的整数 ID、数字状态和写工具不适用。"
+
     # ===== 6.5 仅注入动态目录占位符，正文/资源由只读工具按需返回 =====
     system_prompt += "\n" + SLOT
 
@@ -405,7 +393,7 @@ def create_main_agent(
         middleware=middlewares,
         subagents=subagents if subagents else None,
         skills=None,
-        memory=[str(MEMORY_DIR / "AGENTS.md")],
+        memory=None,  # StateBackend cannot read host files; memory is injected below.
         backend=composite_backend,
         interrupt_on=INTERRUPT_ON_TOOLS,
         checkpointer=checkpointer,

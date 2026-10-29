@@ -27,10 +27,8 @@ export interface SSEToolEndEvent {
   id: string;
 }
 
-export interface SSEInterruptEvent {
+export interface SSEInterruptEvent extends InterruptData {
   type: "interrupt";
-  interrupt_type: "hitl_approval" | "order_info_supplement";
-  data: InterruptData;
 }
 
 export interface SSEDoneEvent {
@@ -61,7 +59,10 @@ export interface SSEPhaseEvent {
   label: string;
 }
 
+export interface SSEErrorEvent { type: "error"; message: string; }
+
 export type SSEEvent =
+  | SSEErrorEvent
   | SSETokenEvent
   | SSEToolStartEvent
   | SSEToolArgsEvent
@@ -81,9 +82,9 @@ export interface InterruptData {
   missing_fields?: string[];
   message?: string;
   // hitl_approval
-  order_data?: Record<string, unknown>;
+  order_data?: Record<string, unknown> | Record<string, unknown>[];
   tool_name?: string;
-  tool_args?: Record<string, unknown>;
+  tool_args?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 // ===== 消息类型 =====

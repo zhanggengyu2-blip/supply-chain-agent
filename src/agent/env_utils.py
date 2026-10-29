@@ -13,7 +13,7 @@ def load_env():
     project_root = Path(__file__).parent.parent.parent
     env_file = project_root / ".env"
     if env_file.exists():
-        load_dotenv(env_file, override=True)
+        load_dotenv(env_file, override=False)
     else:
         print(f"⚠️ .env file not found at {env_file}")
 

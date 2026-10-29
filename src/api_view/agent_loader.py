@@ -73,7 +73,7 @@ class AgentLoader:
             # 生产级存储：MongoDB 持久化
             from pymongo import MongoClient
             mongo_client = MongoClient(MONGODB_URI)
-            self._checkpointer = MongoDBSaver(mongo_client)
+            self._checkpointer = MongoDBSaver(mongo_client, db_name=MONGODB_DB_NAME)
             self._mongo_client = mongo_client
             self._store = MongoDBStore(
                 uri=MONGODB_URI,
@@ -146,6 +146,8 @@ class AgentLoader:
     def create_config(self, thread_id: str, user_id: str = "default_user") -> dict:
         """创建 LangGraph 运行配置"""
         return {
+            # Middleware hooks consume graph steps in addition to model calls.
+            "recursion_limit": 1000,
             "configurable": {
                 "thread_id": thread_id,
                 "user_id": user_id,

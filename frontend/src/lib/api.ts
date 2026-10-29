@@ -1,6 +1,6 @@
 import { Conversation, ChatRequest, ResumeRequest } from "./types";
 
-const BASE_URL = "http://localhost:8000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 // ===== 对话 API =====
 export async function streamChat(
@@ -16,7 +16,8 @@ export async function streamChat(
   });
 
   if (!response.ok) {
-    throw new Error(`Stream failed: ${response.status}`);
+    const detail = await response.json().catch(() => ({}));
+    throw new Error(detail.detail || `请求失败: ${response.status}`);
   }
 
   const reader = response.body?.getReader();
@@ -40,13 +41,14 @@ export async function resumeChat(
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(request),
+      body: JSON.stringify({ resume_data: request.resume_data }),
       signal,
     }
   );
 
   if (!response.ok) {
-    throw new Error(`Resume failed: ${response.status}`);
+    const detail = await response.json().catch(() => ({}));
+    throw new Error(detail.detail || `恢复失败: ${response.status}`);
   }
 
   const reader = response.body?.getReader();

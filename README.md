@@ -1,3 +1,5 @@
+> **ERPNext 阶段一开发入口（2026-10-30）**：请先阅读 [本地启动](docs/START_PHASE1.md) 和 [迁移/验证记录](docs/PHASE1.md)。当前运行配置仅开放 ERPNext 只读工具，执行工具关闭。下方保留的原项目说明及历史验收数据面向 Java ERP，不代表本工程已通过 ERPNext 真实业务验收。来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
 # ERP 智能采购助手 — Harness Engineering 架构
 
 > 基于 DeepAgent + LangGraph + MCP 协议的摩托车零部件采购智能助手，严格遵循 **Harness Engineering** 架构思想（Planning → Executing → Review → Result）。

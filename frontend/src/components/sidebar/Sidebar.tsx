@@ -26,7 +26,7 @@ export default function Sidebar({
   onDeleteThread,
 }: Props) {
   return (
-    <aside className="w-[280px] h-screen flex flex-col bg-[#F9FAFB] border-r border-gray-200 shrink-0">
+    <aside className="w-[280px] h-screen hidden md:flex flex-col bg-[#F9FAFB] border-r border-gray-200 shrink-0">
       <Logo />
       <NewChatButton onClick={onNewChat} />
       <SearchBox value={searchQuery} onChange={onSearchChange} />

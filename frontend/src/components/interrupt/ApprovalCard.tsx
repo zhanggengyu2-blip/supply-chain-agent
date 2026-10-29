@@ -18,7 +18,7 @@ export default function ApprovalCard({ data, onApprove, onReject }: Props) {
         <div className="flex items-center gap-2 mb-3">
           <ShieldCheck size={16} className="text-blue-600" />
           <span className="text-sm font-medium text-blue-800">
-            订单审批确认
+            操作审批确认
           </span>
         </div>
 
@@ -58,14 +58,14 @@ export default function ApprovalCard({ data, onApprove, onReject }: Props) {
             className="flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
           >
             <Check size={14} />
-            批准执行
+            批准全部操作
           </button>
           <button
             onClick={onReject}
             className="flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors"
           >
             <X size={14} />
-            拒绝
+            拒绝全部操作
           </button>
         </div>
       </div>

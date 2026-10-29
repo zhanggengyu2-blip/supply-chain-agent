@@ -63,11 +63,11 @@ export default function Home() {
   );
 
   const handleApprove = useCallback(() => {
-    chat.resumeWith({ decisions: [{ type: "approve" }] });
+    chat.resumeWith({ decisions: Array.from({ length: Array.isArray(chat.interruptData?.order_data) ? chat.interruptData.order_data.length : 1 }, () => ({ type: "approve" })) });
   }, [chat]);
 
   const handleReject = useCallback(() => {
-    chat.resumeWith({ decisions: [{ type: "reject" }] });
+    chat.resumeWith({ decisions: Array.from({ length: Array.isArray(chat.interruptData?.order_data) ? chat.interruptData.order_data.length : 1 }, () => ({ type: "reject" })) });
   }, [chat]);
 
   return (
@@ -82,6 +82,7 @@ export default function Home() {
         onDeleteThread={handleDeleteThread}
       />
       <ChatArea
+        error={chat.error}
         messages={chat.messages}
         streaming={chat.streaming}
         thinking={chat.thinking}

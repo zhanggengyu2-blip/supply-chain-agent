@@ -12,6 +12,7 @@ import ToolCallToggle from "@/components/common/ToolCallToggle";
 import InterruptBanner from "@/components/interrupt/InterruptBanner";
 
 interface Props {
+  error?: string | null;
   messages: ChatMessage[];
   streaming: boolean;
   thinking: boolean;
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export default function ChatArea({
+  error,
   messages,
   streaming,
   thinking,
@@ -80,6 +82,7 @@ export default function ChatArea({
       {thinking && <ThinkingIndicator visible={thinking} />}
 
       {/* 中断交互区 */}
+      {error && <div role="alert" className="mx-6 mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       {interrupted && interruptData && (
         <InterruptBanner
           data={interruptData}

@@ -43,6 +43,10 @@ def test(func):
     return func
 
 
+# The decorator is a helper, not a pytest test requiring a `func` fixture.
+test.__test__ = False
+
+
 class FakeItem:
     def __init__(self, namespace, key, value):
         self.namespace = tuple(namespace)

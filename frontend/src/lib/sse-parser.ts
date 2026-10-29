@@ -6,6 +6,8 @@ import { SSEEvent } from "./types";
  */
 export class SSEParser {
   private buffer: string = "";
+  private currentEvent = "";
+  private currentData: string[] = [];
 
   /**
    * 输入原始文本块，返回解析出的事件数组
@@ -18,16 +20,17 @@ export class SSEParser {
     // 保留最后一个可能不完整的行
     this.buffer = lines.pop() || "";
 
-    let currentEvent = "";
-    let currentData = "";
 
-    for (const line of lines) {
+    for (const rawLine of lines) {
+      const line = rawLine.replace(/\r$/, "");
       if (line.startsWith("event:")) {
-        currentEvent = line.slice(6).trim();
+        this.currentEvent = line.slice(6).trim();
       } else if (line.startsWith("data:")) {
-        currentData = line.slice(5).trim();
-      } else if (line === "" && currentEvent && currentData) {
+        this.currentData.push(line.slice(5).trimStart());
+      } else if (line === "" && this.currentData.length > 0) {
         // 空行表示事件结束
+        const currentData = this.currentData.join("\n");
+        const currentEvent = this.currentEvent;
         try {
           const parsed = JSON.parse(currentData);
           const event: SSEEvent = { type: currentEvent, ...parsed };
@@ -42,8 +45,8 @@ export class SSEParser {
             });
           }
         }
-        currentEvent = "";
-        currentData = "";
+        this.currentEvent = "";
+        this.currentData = [];
       }
     }
 
@@ -52,5 +55,7 @@ export class SSEParser {
 
   reset(): void {
     this.buffer = "";
+    this.currentEvent = "";
+    this.currentData = [];
   }
 }

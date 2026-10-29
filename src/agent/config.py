@@ -49,7 +49,7 @@ MONGODB_URI = get_env("MONGODB_URI", "mongodb://localhost:27017")
 MONGODB_DB_NAME = get_env("MONGODB_DB_NAME", "erp_agent")
 
 # ============ MCP Server 配置 ============
-MCP_SERVER_URL = get_env("MCP_SERVER_URL", "http://localhost:9000")
+MCP_SERVER_URL = get_env("MCP_SERVER_URL", "http://127.0.0.1:9000")
 MCP_SSE_URL = f"{MCP_SERVER_URL}/sse"
 
 # ============ 沙箱配置 ============
@@ -81,7 +81,5 @@ MAX_TOOL_CALLS = get_env_int("MAX_TOOL_CALLS", 30)
 SUMMARIZATION_THRESHOLD = 0.85  # 85% 上下文窗口时触发摘要
 
 # ============ 中断配置 ============
-INTERRUPT_ON_TOOLS = {
-    "order_create": {"allowed_decisions": ["approve", "reject"]},
-    "order_update": {"allowed_decisions": ["approve", "reject"]},
-}
+# No ERP write tools are registered. HITL remains available for future controlled tools.
+INTERRUPT_ON_TOOLS = {}

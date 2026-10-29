@@ -135,7 +135,7 @@ class MetadataCallback(BaseCallbackHandler):
     def on_tool_start(self, serialized, input_str, *, run_id, parent_run_id=None, **kw):
         # Names are code-owned in this project; no arbitrary plugin names exported.
         name=(serialized or {}).get('name','')
-        allowed={'task','read_memory','remember','list_skills','read_skill','read_skill_resource','request_order_info'}
+        allowed={'erpnext_suppliers','erpnext_items','erpnext_warehouses','erpnext_bins','erpnext_purchase_orders','write_todos','task','read_memory','remember','list_skills','read_skill','read_skill_resource','request_order_info'}
         if name not in allowed and not (name.startswith(('part_','supplier_','inventory_','order_')) and name.replace('_','').isascii() and name.replace('_','').isalnum()): name='other'
         self.begin(run_id,parent_run_id,'tool.'+name)
     def on_tool_end(self, output, *, run_id, **kw):

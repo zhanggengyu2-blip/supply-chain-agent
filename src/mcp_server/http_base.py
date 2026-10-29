@@ -39,37 +39,19 @@ class ERPHttpClient:
 
     async def get(self, path: str, params: Optional[dict] = None) -> dict:
         """GET 请求"""
-        # 过滤掉 None 值的参数
-        if params:
-            params = {k: v for k, v in params.items() if v is not None}
-        response = await self.client.get(path, params=params)
-        return self._handle_response(response)
+        raise PermissionError("Legacy Java ERP disabled in ERPNext phase one")
 
     async def post(self, path: str, json_data: Optional[dict] = None, params: Optional[dict] = None) -> dict:
-        """POST 请求"""
-        if params:
-            params = {k: v for k, v in params.items() if v is not None}
-        response = await self.client.post(path, json=json_data, params=params)
-        return self._handle_response(response)
+        raise PermissionError("ERP writes disabled in phase one")
 
     async def put(self, path: str, json_data: Optional[dict] = None, params: Optional[dict] = None) -> dict:
-        """PUT 请求"""
-        if params:
-            params = {k: v for k, v in params.items() if v is not None}
-        response = await self.client.put(path, json=json_data, params=params)
-        return self._handle_response(response)
+        raise PermissionError("ERP writes disabled in phase one")
 
     async def patch(self, path: str, params: Optional[dict] = None) -> dict:
-        """PATCH 请求"""
-        if params:
-            params = {k: v for k, v in params.items() if v is not None}
-        response = await self.client.patch(path, params=params)
-        return self._handle_response(response)
+        raise PermissionError("ERP writes disabled in phase one")
 
     async def delete(self, path: str) -> dict:
-        """DELETE 请求"""
-        response = await self.client.delete(path)
-        return self._handle_response(response)
+        raise PermissionError("ERP writes disabled in phase one")
 
     def _handle_response(self, response: httpx.Response) -> dict:
         """统一响应处理"""

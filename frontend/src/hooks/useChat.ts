@@ -56,6 +56,10 @@ export function useChat() {
   const handleEvent = useCallback(
     (event: SSEEvent) => {
       switch (event.type) {
+        case "error":
+          setError(event.message);
+          setThinking(false);
+          break;
         case "token":
           assistantMsgRef.current += event.content;
           updateAssistantMessage();
@@ -104,7 +108,7 @@ export function useChat() {
 
         case "interrupt":
           setInterrupted(true);
-          setInterruptData(event.data);
+          setInterruptData(event);
           break;
 
         case "thinking":
@@ -190,6 +194,8 @@ export function useChat() {
     onEvent: handleEvent,
     onError: (err) => {
       setError(err.message);
+      setThinking(false);
+      setInterrupted(!!interruptData);
       setStreaming(false);
     },
     onComplete: () => {
@@ -255,7 +261,6 @@ export function useChat() {
   const resumeWith = useCallback(
     (resumeData: Record<string, unknown>) => {
       setInterrupted(false);
-      setInterruptData(null);
       setStreaming(true);
       resetAssistantState();
 

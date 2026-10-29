@@ -41,3 +41,7 @@ src/download/
 .idea/
 .DS_Store
 Thumbs.db
+
+.pnpm-store/
+.test-dist/
+.sandbox/

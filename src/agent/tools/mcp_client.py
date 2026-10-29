@@ -7,6 +7,7 @@ MCP 工具加载模块
 - 连接健康检查
 - 优雅降级（MCP不可用时返回空工具列表，Agent仍可对话）
 """
+import httpx
 import asyncio
 import time
 from typing import List
@@ -17,7 +18,7 @@ from ..config import MCP_SERVER_URL, MCP_SSE_URL
 from ..log_utils import mcp_logger
 
 # 重试配置
-MAX_RETRIES = 3
+MAX_RETRIES = 2
 RETRY_BASE_DELAY = 1.0  # 秒
 RETRY_BACKOFF_FACTOR = 2.0
 
@@ -25,6 +26,11 @@ RETRY_BACKOFF_FACTOR = 2.0
 _cached_tools: List[BaseTool] | None = None
 _cache_time: float = 0
 CACHE_TTL = 300  # 5分钟缓存
+
+
+def direct_mcp_http_client(headers=None, timeout=None, auth=None):
+    """Local MCP traffic must not be routed through OS/environment proxies."""
+    return httpx.AsyncClient(headers=headers, timeout=timeout, auth=auth, trust_env=False)
 
 
 async def load_mcp_tools(force_refresh: bool = False) -> List[BaseTool]:
@@ -54,11 +60,14 @@ async def load_mcp_tools(force_refresh: bool = False) -> List[BaseTool]:
                     "erp": {
                         "url": MCP_SSE_URL,
                         "transport": "sse",
+                        "timeout": 5,
+                        "sse_read_timeout": 30,
+                        "httpx_client_factory": direct_mcp_http_client,
                     }
                 }
             )
 
-            tools = await client.get_tools()
+            tools = await asyncio.wait_for(client.get_tools(), timeout=10)
 
             if tools:
                 _cached_tools = tools

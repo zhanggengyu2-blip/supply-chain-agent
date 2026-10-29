@@ -12,7 +12,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
 ERP_BASE_URL = os.getenv("ERP_BASE_URL", "http://localhost:8081")
 
 # MCP Server 监听配置
-MCP_HOST = os.getenv("MCP_HOST", "0.0.0.0")
+MCP_HOST = os.getenv("MCP_HOST", "127.0.0.1")
 MCP_PORT = int(os.getenv("MCP_PORT", "9000"))
 
 # HTTP 客户端配置

@@ -51,11 +51,7 @@ async def lifespan(app: FastAPI):
     stop_event = asyncio.Event()
     maintenance_task = None
     try:
-        # 预热失败不阻止 Web 服务启动；首个请求仍会按需创建并回退到 LocalShell。
-        await asyncio.to_thread(sandbox_manager.ensure_warm_pool)
-        maintenance_task = asyncio.create_task(
-            _sandbox_maintenance(stop_event), name="sandbox-maintenance"
-        )
+        # Phase one disables arbitrary execution; no sandbox containers are created.
         yield
     finally:
         web_logger.info("Shutting down ERP Agent Web Server...")
@@ -72,7 +68,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="DeepAgent 智能采购助手",
-    description="基于 Harness Engineering 架构的摩托车零部件采购智能助手 API",
+    description="基于 Harness Engineering 架构的ERPNext 供应链只读采购助手 API",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -80,7 +76,7 @@ app = FastAPI(
 # CORS 全开（开发环境）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -121,4 +117,4 @@ async def health():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

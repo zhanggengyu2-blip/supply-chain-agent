@@ -70,7 +70,7 @@ async def stream_chat_response(
               rejected=any(d.get('type')=='reject' for d in decisions if isinstance(d,dict)))
 
     # 加载已有消息（恢复场景）或初始化
-    if resume_data:
+    if resume_data is not None:
         display_messages = await agent_loader.get_display_messages(thread_id)
         current_input = Command(resume=resume_data)
     else:
@@ -108,6 +108,9 @@ async def stream_chat_response(
     runtime_tokens = bind_runtime(user_id, agent_loader.store)
 
     try:
+        if resume_data is not None:
+            # Recheck under the run lock so duplicate resumes cannot execute twice.
+            await validate_resume(session.agent, config, resume_data)
         # 发射“深度思考”事件（前端展示思考动画）
         yield sse_event("thinking", {"status": "start"})
 
@@ -262,6 +265,13 @@ async def stream_chat_response(
                 token_type = getattr(token, "type", "")
                 content = getattr(token, "content", "")
                 tool_call_chunks = getattr(token, "tool_call_chunks", None)
+                # Some providers emit complete AIMessage tool calls instead of chunks.
+                if not tool_call_chunks and token_type == "ai":
+                    tool_call_chunks = [
+                        {"name": call["name"], "id": call["id"],
+                         "args": json.dumps(call.get("args", {}), ensure_ascii=False)}
+                        for call in (getattr(token, "tool_calls", None) or [])
+                    ]
 
                 # AIMessage with tool_call_chunks → tool_start / tool_args
                 if tool_call_chunks:
@@ -380,6 +390,9 @@ async def stream_chat_response(
 @router.post("/stream")
 async def chat_stream(request: ChatRequest):
     """SSE 流式对话端点"""
+    from ...agent.config import LLM_API_KEY
+    if not LLM_API_KEY:
+        raise HTTPException(status_code=503, detail="尚未配置模型 API Key，请在本项目 .env 填写 DEEPSEEK_API_KEY 并重启后端")
     await agent_loader.initialize()
 
     thread_id = request.thread_id or agent_loader.generate_thread_id()
@@ -408,18 +421,59 @@ async def chat_stream(request: ChatRequest):
     )
 
 
+async def validate_resume(agent, config, payload):
+    """Validate against checkpointed interrupt, including nested subagent interrupts."""
+    state = await agent.aget_state(config, subgraphs=True)
+    def collect(snapshot):
+        found = []
+        for task in getattr(snapshot, "tasks", ()):
+            found.extend(getattr(task, "interrupts", ()))
+            nested = getattr(task, "state", None)
+            if nested is not None and not isinstance(nested, dict):
+                found.extend(collect(nested))
+        return found
+    interrupts = {getattr(i, "id", str(n)): i for n, i in enumerate(collect(state))}
+    if not interrupts:
+        raise HTTPException(status_code=409, detail="会话没有待恢复的中断")
+    if len(interrupts) != 1:
+        raise HTTPException(status_code=409, detail="存在多个独立中断，当前工作台尚不支持同时恢复")
+    value = next(iter(interrupts.values())).value
+    if not isinstance(value, dict):
+        raise HTTPException(status_code=409, detail="不支持的中断格式")
+    if "action_requests" in value:
+        decisions = payload.get("decisions", [])
+        actions = value["action_requests"]
+        if len(decisions) != len(actions):
+            raise HTTPException(status_code=422, detail="审批决定数量必须与待审批工具数量一致")
+        review_configs = value.get("review_configs", [])
+        for index, decision in enumerate(decisions):
+            allowed = review_configs[index].get("allowed_decisions", []) if index < len(review_configs) else ["approve", "reject"]
+            if decision["type"] not in allowed:
+                raise HTTPException(status_code=422, detail="此中断不允许该审批决定")
+    elif value.get("type") == "order_info_request":
+        if not payload.get("supplement"):
+            raise HTTPException(status_code=422, detail="此中断需要补充信息")
+    else:
+        raise HTTPException(status_code=409, detail="不支持的中断格式")
+
+
 @router.post("/{thread_id}/resume")
 async def chat_resume(thread_id: str, request: ResumeRequest):
     """中断恢复端点"""
     await agent_loader.initialize()
-    user_id = await agent_loader.get_conversation_user_id(thread_id) or "default_user"
+    user_id = await agent_loader.get_conversation_user_id(thread_id)
+    if user_id is None:
+        raise HTTPException(status_code=404, detail="会话不存在")
+    session = await agent_loader.get_session(user_id)
+    await validate_resume(session.agent, agent_loader.create_config(thread_id, user_id),
+                          request.resume_data.model_dump(exclude_none=True))
 
     return StreamingResponse(
         stream_chat_response(
             message="",
             thread_id=thread_id,
             user_id=user_id,
-            resume_data=request.resume,
+            resume_data=request.resume_data.model_dump(exclude_none=True),
         ),
         media_type="text/event-stream",
         headers={
