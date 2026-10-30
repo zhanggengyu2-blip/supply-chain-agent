@@ -66,3 +66,36 @@
 - `tests/test_live_erpnext.py`
 - `tests/test_mongo_persistence.py`
 - `tests/test_runtime.py`
+
+## 真实环境收尾追加
+
+保留只读边界，修复真实模型与 UI 兼容问题，新增验收及凭据准备说明。当前 ERP 认证验收仍阻塞。
+
+- `README.md`
+- `conftest.py`
+- `docs/CONFIGURE_READONLY_AND_LANGFUSE.md`
+- `docs/PHASE1.md`
+- `docs/PHASE1_ACCEPTANCE.md`
+- `docs/START_PHASE1.md`
+- `docs/evidence/closeout-check.txt`
+- `docs/evidence/closeout-dependency-audit.json`
+- `docs/evidence/closeout-live.json`
+- `docs/evidence/closeout-mongo.txt`
+- `docs/evidence/closeout-review.json`
+- `docs/evidence/closeout-services.json`
+- `docs/evidence/closeout-trace-link.json`
+- `docs/evidence/closeout-traced-live.json`
+- `docs/evidence/closeout-workbench.jpg`
+- `docs/evidence/closeout-workbench.json`
+- `evals/phase1_acceptance.py`
+- `frontend/package-lock.json`
+- `frontend/package.json`
+- `frontend/pnpm-lock.yaml`
+- `frontend/src/app/page.tsx`
+- `frontend/src/components/chat/MessageBubble.tsx`
+- `scripts/check.sh`
+- `src/agent/config.py`
+- `src/api_view/api/chat.py`
+- `tests/test_model_configuration.py`
+- `tests/test_phase1_acceptance.py`
+- `tests/test_stream_formatting.py`

@@ -54,7 +54,7 @@ docker compose up -d mongo
 | LANGFUSE_BASE_URL / PUBLIC_KEY / SECRET_KEY | 分别填写 LANGFUSE_BASE_URL、LANGFUSE_PUBLIC_KEY、LANGFUSE_SECRET_KEY |
 | ERP_TRACE_HASH_KEY | 用户自己提供的随机伪匿名化密钥，用来散列用户/会话标识 |
 
-修改 `.env` 后重启 API 和 MCP。当前模型、ERP 和 Langfuse 密钥均未填写。
+修改 `.env` 后重启 API 和 MCP。DeepSeek 与 Langfuse 已配置并完成真实验证；ERPNext 认证和范围配置仍缺失。准备步骤见 [配置说明](CONFIGURE_READONLY_AND_LANGFUSE.md)。
 所有聊天会话共享一个固定 ERP 用户；当前 Web API 没有生产登录鉴权，只允许本机开发访问。
 采购订单只读能力目前是表头查询，公司范围生效；订单行、仓库级采购权限未验收。
 

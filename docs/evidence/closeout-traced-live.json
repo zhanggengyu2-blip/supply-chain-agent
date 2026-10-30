@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-10-30T09:47:56.555932+08:00",
+  "scope": "Phase-one acceptance, no ERP writes",
+  "configuration": {
+    "model_key_configured": true,
+    "erp_missing": [
+      "ERPNEXT_API_KEY",
+      "ERPNEXT_API_SECRET",
+      "ERPNEXT_API_USER",
+      "ERPNEXT_COMPANY",
+      "ERPNEXT_WAREHOUSES"
+    ],
+    "langfuse_missing": [],
+    "tracing_enabled": true
+  },
+  "services": {
+    "web": {
+      "status": "passed",
+      "http_status": 200
+    },
+    "api": {
+      "status": "passed",
+      "http_status": 200
+    },
+    "erp_public_entry": {
+      "status": "passed",
+      "http_status": 200
+    }
+  },
+  "mcp": {
+    "status": "passed",
+    "tools": [
+      "erpnext_bins",
+      "erpnext_items",
+      "erpnext_purchase_orders",
+      "erpnext_suppliers",
+      "erpnext_warehouses"
+    ],
+    "write_tools_registered": false
+  },
+  "model": {
+    "status": "passed",
+    "plain_call": true,
+    "tool_call": true,
+    "tool_result_used": true,
+    "usage": {
+      "input_tokens": 396,
+      "output_tokens": 67,
+      "total_tokens": 463
+    },
+    "usage_present_for_every_call": true,
+    "trace_id": "a04aa73372bba4a9aa4ff0c0771e4852",
+    "scope": "Real model + local safe probe; no ERP business query."
+  },
+  "erp": {
+    "status": "blocked",
+    "missing": [
+      "ERPNEXT_API_KEY",
+      "ERPNEXT_API_SECRET",
+      "ERPNEXT_API_USER",
+      "ERPNEXT_COMPANY",
+      "ERPNEXT_WAREHOUSES"
+    ]
+  },
+  "langfuse": {
+    "status": "passed",
+    "trace_id": "a04aa73372bba4a9aa4ff0c0771e4852",
+    "root_found": true,
+    "observations": 5,
+    "generations": 3,
+    "tools": [
+      "tool.other"
+    ],
+    "total_tokens": 463,
+    "business_payloads_empty": true,
+    "has_more": false
+  },
+  "workbench_business_task": {
+    "status": "not_tested",
+    "reason": "Run in the UI after model, ERP permissions and tracing are verified."
+  }
+}

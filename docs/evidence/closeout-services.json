@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-10-30T09:32:37.350626+08:00",
+  "scope": "Phase-one acceptance, no ERP writes",
+  "configuration": {
+    "model_key_configured": true,
+    "erp_missing": [
+      "ERPNEXT_API_KEY",
+      "ERPNEXT_API_SECRET",
+      "ERPNEXT_API_USER",
+      "ERPNEXT_COMPANY",
+      "ERPNEXT_WAREHOUSES"
+    ],
+    "langfuse_missing": [
+      "LANGFUSE_BASE_URL",
+      "LANGFUSE_PUBLIC_KEY",
+      "LANGFUSE_SECRET_KEY",
+      "ERP_TRACE_HASH_KEY"
+    ],
+    "tracing_enabled": false
+  },
+  "services": {
+    "web": {
+      "status": "passed",
+      "http_status": 200
+    },
+    "api": {
+      "status": "passed",
+      "http_status": 200
+    },
+    "erp_public_entry": {
+      "status": "passed",
+      "http_status": 200
+    }
+  },
+  "mcp": {
+    "status": "passed",
+    "tools": [
+      "erpnext_bins",
+      "erpnext_items",
+      "erpnext_purchase_orders",
+      "erpnext_suppliers",
+      "erpnext_warehouses"
+    ],
+    "write_tools_registered": false
+  },
+  "model": {
+    "status": "not_tested",
+    "reason": "Model issuer/endpoint confirmation pending; --model explicitly runs the configured endpoint."
+  },
+  "erp": {
+    "status": "blocked",
+    "missing": [
+      "ERPNEXT_API_KEY",
+      "ERPNEXT_API_SECRET",
+      "ERPNEXT_API_USER",
+      "ERPNEXT_COMPANY",
+      "ERPNEXT_WAREHOUSES"
+    ]
+  },
+  "langfuse": {
+    "status": "blocked",
+    "missing": [
+      "LANGFUSE_BASE_URL",
+      "LANGFUSE_PUBLIC_KEY",
+      "LANGFUSE_SECRET_KEY",
+      "ERP_TRACE_HASH_KEY"
+    ],
+    "tracing_enabled": false
+  },
+  "workbench_business_task": {
+    "status": "not_tested",
+    "reason": "Run in the UI after model, ERP permissions and tracing are verified."
+  }
+}

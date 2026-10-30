@@ -85,6 +85,7 @@ async def stream_chat_response(
 
     # 当前助手消息累积缓冲
     assistant_content = ""
+    last_text_namespace = None
     tool_calls_buffer = []
     thinking_emitted = False
     phase = "thinking"  # 当前阶段: thinking → planning → executing → reviewing → result
@@ -251,7 +252,8 @@ async def stream_chat_response(
                 # Routing output is internal control data, never assistant text
                 # or a user-visible tool invocation.
                 metadata = chunk[1] if isinstance(chunk, (tuple, list)) and len(chunk) > 1 else {}
-                if isinstance(metadata, dict) and "review_router" in (metadata.get("tags") or []):
+                internal_grader = any(marker in str(namespace) for marker in ("RubricMiddleware", "rubric_grader"))
+                if internal_grader or (isinstance(metadata, dict) and "review_router" in (metadata.get("tags") or [])):
                     continue
                 # chunk 格式: (message_chunk, metadata_dict)
                 if isinstance(chunk, (list, tuple)) and len(chunk) >= 1:
@@ -338,11 +340,17 @@ async def stream_chat_response(
                     continue
 
                 # AIMessage 纯文本 → token 事件
-                if content and isinstance(content, str) and content.strip():
+                if content and isinstance(content, str):
                     # 首次收到 token 时结束 thinking
                     if not thinking_emitted:
                         yield sse_event("thinking", {"status": "end"})
                         thinking_emitted = True
+                    text_namespace = tuple(namespace or ())
+                    if assistant_content and last_text_namespace != text_namespace:
+                        # Child and main answers are separate Markdown documents.
+                        assistant_content += "\n\n"
+                        yield sse_event("token", {"content": "\n\n", "source": "main"})
+                    last_text_namespace = text_namespace
                     assistant_content += content
 
                     # 判断来源（通过 namespace 元组）

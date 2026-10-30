@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-10-30T09:56:56.914634+08:00",
+  "thread_id": "d45aa467-9328-436d-8b69-e5990250415c",
+  "business_acceptance": "blocked_missing_erp_credentials",
+  "real_model_workbench_error_path": "passed",
+  "tools": [
+    "write_todos",
+    "task",
+    "read_skill",
+    "erpnext_purchase_orders",
+    "write_todos",
+    "write_todos"
+  ],
+  "delegated_to_procurement_order": true,
+  "purchase_order_attempts": 1,
+  "configuration_error_preserved": true,
+  "markdown_newlines_preserved": true,
+  "persisted_messages": 2,
+  "review_verdicts": [
+    "satisfied"
+  ],
+  "harness_events": [
+    {
+      "type": "review_decision"
+    },
+    {
+      "type": "phase",
+      "phase": "planning"
+    },
+    {
+      "type": "phase",
+      "phase": "executing"
+    },
+    {
+      "type": "review_decision"
+    },
+    {
+      "type": "review",
+      "verdict": "satisfied",
+      "iteration": 0
+    },
+    {
+      "type": "phase",
+      "phase": "executing"
+    },
+    {
+      "type": "phase",
+      "phase": "result"
+    }
+  ],
+  "actual_erp_records_read": false,
+  "langfuse": {
+    "status": "passed",
+    "trace_id": "85f6b94e0abb827d0b79b8d9fe73fbd9",
+    "root_found": true,
+    "observations": 126,
+    "generations": 9,
+    "tools": [
+      "tool.write_todos",
+      "tool.write_todos",
+      "tool.erpnext_purchase_orders",
+      "tool.read_skill",
+      "tool.task",
+      "tool.write_todos"
+    ],
+    "total_tokens": 58028,
+    "usage_present_for_every_generation": true,
+    "business_payloads_empty": true,
+    "has_more": false
+  },
+  "trace_url": "https://us.cloud.langfuse.com/project/cmvub6405005sad0mm6rjufnw/traces/85f6b94e0abb827d0b79b8d9fe73fbd9",
+  "browser_table_verified": true,
+  "internal_grader_tool_hidden_in_ui": true
+}

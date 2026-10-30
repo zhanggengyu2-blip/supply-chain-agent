@@ -15,13 +15,14 @@ export default function Home() {
 
   // 聊天结束后自动刷新历史列表
   useEffect(() => {
-    if (wasStreaming.current && !chat.streaming) {
+    const completed = wasStreaming.current && !chat.streaming;
+    wasStreaming.current = chat.streaming;
+    if (completed) {
       // 延迟 500ms 等待后端保存完成
       const timer = setTimeout(() => history.refresh(), 500);
       return () => clearTimeout(timer);
     }
-    wasStreaming.current = chat.streaming;
-  }, [chat.streaming, history]);
+  }, [chat.streaming, history.refresh]);
 
   const handleSelectThread = useCallback(
     async (threadId: string) => {

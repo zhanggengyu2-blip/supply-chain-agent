@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "strategy": "ToolStrategy",
+  "real_model": true,
+  "verdict": "satisfied",
+  "criteria_count": 1,
+  "native_json_schema_used": false
+}

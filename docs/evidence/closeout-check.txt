@@ -1,0 +1,50 @@
+WARNING: The directory '/Users/zhanggengyu/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+No broken requirements found.
+.......................s.s..................................... [ 41%]
+.........................................................................................                                                [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastmcp/server/auth/providers/jwt.py:10
+  /Users/zhanggengyu/Documents/极简AI团队需求管理智能体/供应链协同Agent/.venv/lib/python3.12/site-packages/fastmcp/server/auth/providers/jwt.py:10: AuthlibDeprecationWarning: authlib.jose module is deprecated, please use joserfc instead.
+  It will be compatible before version 2.0.0.
+    from authlib.jose import JsonWebKey, JsonWebToken
+
+tests/test_runtime.py::test_actual_main_planning_create_update_and_query
+  /Users/zhanggengyu/Documents/极简AI团队需求管理智能体/供应链协同Agent/src/agent/middlewares/review_gate.py:69: LangChainBetaWarning: The middleware `RubricMiddleware` is in beta. It is actively being worked on, so the API may change.
+    self._write_reviewer = RubricMiddleware(**{**kwargs, "max_iterations": 1})
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+150 passed, 2 skipped, 2 warnings, 17 subtests passed in 2.95s
+$ tsc src/lib/types.ts src/lib/sse-parser.ts --outDir .test-dist --module commonjs --target es2020 --skipLibCheck && node --test tests/*.cjs
+✔ every possible network split preserves approval and tool events (2.94375ms)
+✔ character chunks, CRLF and reset (0.162917ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45.459125
+$ next build --webpack
+▲ Next.js 16.2.12 (webpack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1351ms
+  Running TypeScript ...
+  Finished TypeScript in 1331ms ...
+  Collecting page data using 5 workers ...
+  Generating static pages using 5 workers (0/4) ...
+  Generating static pages using 5 workers (1/4) 
+  Generating static pages using 5 workers (2/4) 
+  Generating static pages using 5 workers (3/4) 
+✓ Generating static pages using 5 workers (4/4) in 251ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+

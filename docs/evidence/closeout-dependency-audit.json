@@ -1,0 +1,153 @@
+{
+  "scope": "pnpm lockfile advisory audit; advisory counts are not counts of distinct packages",
+  "summary": {
+    "info": 0,
+    "low": 1,
+    "moderate": 5,
+    "high": 9,
+    "critical": 5
+  },
+  "advisories": [
+    {
+      "package": "postcss",
+      "severity": "moderate",
+      "vulnerable_versions": "<8.5.10",
+      "patched_versions": ">=8.5.10",
+      "url": "https://github.com/advisories/GHSA-qx2v-qp2m-jg93"
+    },
+    {
+      "package": "sharp",
+      "severity": "high",
+      "vulnerable_versions": "<0.35.0",
+      "patched_versions": ">=0.35.0",
+      "url": "https://github.com/advisories/GHSA-f88m-g3jw-g9cj"
+    },
+    {
+      "package": "postcss",
+      "severity": "high",
+      "vulnerable_versions": "<=8.5.11",
+      "patched_versions": ">=8.5.12",
+      "url": "https://github.com/advisories/GHSA-6g55-p6wh-862q"
+    },
+    {
+      "package": "postcss",
+      "severity": "moderate",
+      "vulnerable_versions": "<=8.5.22",
+      "patched_versions": ">=8.5.23",
+      "url": "https://github.com/advisories/GHSA-fxqj-rqcc-2cmp"
+    },
+    {
+      "package": "nanoid",
+      "severity": "high",
+      "vulnerable_versions": "<3.3.18",
+      "patched_versions": ">=3.3.18",
+      "url": "https://github.com/advisories/GHSA-2v37-7h3g-55p8"
+    },
+    {
+      "package": "postcss",
+      "severity": "high",
+      "vulnerable_versions": "<=8.5.17",
+      "patched_versions": ">=8.5.18",
+      "url": "https://github.com/advisories/GHSA-r28c-9q8g-f849"
+    },
+    {
+      "package": "next",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.0.0 <16.3.3",
+      "patched_versions": ">=16.3.3",
+      "url": "https://github.com/advisories/GHSA-p293-qw3h-jr36"
+    },
+    {
+      "package": "sharp",
+      "severity": "high",
+      "vulnerable_versions": "<0.35.4",
+      "patched_versions": ">=0.35.4",
+      "url": "https://github.com/advisories/GHSA-rgj7-g3m4-5g8c"
+    },
+    {
+      "package": "next",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.0.0 <16.3.3",
+      "patched_versions": ">=16.3.3",
+      "url": "https://github.com/advisories/GHSA-2xp9-vwfh-vxw4"
+    },
+    {
+      "package": "next",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.2.0 <16.3.6",
+      "patched_versions": ">=16.3.6",
+      "url": "https://github.com/advisories/GHSA-vcvr-r3jv-pc5j"
+    },
+    {
+      "package": "source-map-js",
+      "severity": "high",
+      "vulnerable_versions": ">=1.0.0 <1.2.2",
+      "patched_versions": ">=1.2.2",
+      "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q"
+    },
+    {
+      "package": "sharp",
+      "severity": "high",
+      "vulnerable_versions": "<0.35.5",
+      "patched_versions": ">=0.35.5",
+      "url": "https://github.com/advisories/GHSA-wq5f-xc86-pv6w"
+    },
+    {
+      "package": "next",
+      "severity": "moderate",
+      "vulnerable_versions": ">=16.0.0 <16.3.8",
+      "patched_versions": ">=16.3.8",
+      "url": "https://github.com/advisories/GHSA-4jqv-mc3x-m676"
+    },
+    {
+      "package": "next",
+      "severity": "low",
+      "vulnerable_versions": ">=16.0.0 <16.3.8",
+      "patched_versions": ">=16.3.8",
+      "url": "https://github.com/advisories/GHSA-39w2-rjm5-chcv"
+    },
+    {
+      "package": "next",
+      "severity": "moderate",
+      "vulnerable_versions": ">=16.0.0 <16.3.8",
+      "patched_versions": ">=16.3.8",
+      "url": "https://github.com/advisories/GHSA-f87g-xv8r-7p7x"
+    },
+    {
+      "package": "next",
+      "severity": "moderate",
+      "vulnerable_versions": ">=16.0.0 <16.3.8",
+      "patched_versions": ">=16.3.8",
+      "url": "https://github.com/advisories/GHSA-mcj8-r9mp-w47p"
+    },
+    {
+      "package": "next",
+      "severity": "high",
+      "vulnerable_versions": ">=16.0.0 <16.3.8",
+      "patched_versions": ">=16.3.8",
+      "url": "https://github.com/advisories/GHSA-cjq9-62q9-8jv4"
+    },
+    {
+      "package": "next",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.0.0 <=16.4.0",
+      "patched_versions": ">=16.4.1",
+      "url": "https://github.com/advisories/GHSA-2464-fhr4-w9xw"
+    },
+    {
+      "package": "next",
+      "severity": "high",
+      "vulnerable_versions": ">=16.0.0 <=16.4.0",
+      "patched_versions": ">=16.4.1",
+      "url": "https://github.com/advisories/GHSA-p3m5-59mp-jv5r"
+    },
+    {
+      "package": "next",
+      "severity": "critical",
+      "vulnerable_versions": ">=16.0.0 <=16.4.0",
+      "patched_versions": ">=16.4.1",
+      "url": "https://github.com/advisories/GHSA-673q-mjm6-r5xr"
+    }
+  ],
+  "remediation_applied": false
+}

@@ -37,11 +37,16 @@ def get_llm(*, thinking: bool = True, timeout: float | None = None,
             reasoning_effort=LLM_REASONING_EFFORT,
             extra_body={"thinking": {"type": "enabled"}},
         )
-    return ChatDeepSeek(
+    model = ChatDeepSeek(
         **common_kwargs,
         temperature=LLM_TEMPERATURE,
         extra_body={"thinking": {"type": "disabled"}},
     )
+    # Verified against the configured DeepSeek endpoint: native json_schema
+    # response_format returns HTTP 400. Let Rubric use ToolStrategy instead.
+    # Copy the profile so this override cannot leak into other model instances.
+    model.profile = {**(model.profile or {}), "structured_output": False}
+    return model
 
 
 # ============ MongoDB 配置 ============
