@@ -12,7 +12,7 @@ interface Props {
 const STATUS_CONFIG = {
   pending: { icon: Circle, color: "text-gray-300", label: "待处理" },
   in_progress: { icon: Loader2, color: "text-blue-500", label: "执行中", spin: true },
-  complete: { icon: CheckCircle2, color: "text-green-500", label: "已完成" },
+  completed: { icon: CheckCircle2, color: "text-green-500", label: "已完成" },
   cancelled: { icon: XCircle, color: "text-red-400", label: "已取消" },
 } as const;
 
@@ -21,7 +21,7 @@ export default function TodoListPanel({ items, visible }: Props) {
 
   if (!visible || items.length === 0) return null;
 
-  const completedCount = items.filter((i) => i.status === "complete").length;
+  const completedCount = items.filter((i) => i.status === "completed").length;
   const progress = items.length > 0 ? (completedCount / items.length) * 100 : 0;
 
   if (!open) {
@@ -78,7 +78,7 @@ export default function TodoListPanel({ items, visible }: Props) {
               />
               <span
                 className={`text-xs leading-relaxed ${
-                  item.status === "complete"
+                  item.status === "completed"
                     ? "text-gray-400 line-through"
                     : item.status === "in_progress"
                     ? "text-gray-800 font-medium"

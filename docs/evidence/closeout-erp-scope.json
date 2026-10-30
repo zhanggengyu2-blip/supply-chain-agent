@@ -1,0 +1,12 @@
+{
+  "scope": "Live GET-only ERPNext negative checks",
+  "empty_item_result": {
+    "data": [],
+    "limit": 1,
+    "offset": 0,
+    "has_more": false,
+    "scope": "Frappe API user permissions (shared master)"
+  },
+  "out_of_scope_warehouse_denied": true,
+  "error_code": "warehouse_denied"
+}

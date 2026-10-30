@@ -33,6 +33,7 @@ export interface SSEInterruptEvent extends InterruptData {
 
 export interface SSEDoneEvent {
   type: "done";
+  failed?: boolean;
   thread_id: string;
   interrupted: boolean;
 }
@@ -109,7 +110,7 @@ export interface ChatMessage {
 export interface TodoItem {
   id: string;
   content: string;
-  status: "pending" | "in_progress" | "complete" | "cancelled";
+  status: "pending" | "in_progress" | "completed" | "cancelled";
 }
 
 export interface TodoState {

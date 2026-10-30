@@ -1,8 +1,8 @@
-> 最新收尾状态见 [PHASE1_ACCEPTANCE.md](PHASE1_ACCEPTANCE.md)：DeepSeek 与 Langfuse 已完成真实验证，ERPNext 专用只读凭据仍缺失。下文保留首次代码交付记录。
+> 最新收尾状态见 [PHASE1_ACCEPTANCE.md](PHASE1_ACCEPTANCE.md)：DeepSeek 与 Langfuse 已完成真实验证；ERPNext 专用 API 只读用户已自动配置，五类认证查询及 112 项有效写权限检查通过。下文是首次代码交付时的历史记录，能力状态以最新验收文档为准。
 
 # ERPNext 供应链协同 Agent · 阶段一记录
 
-更新：2026-10-30（Asia/Shanghai）。结论：基础工程已落地并通过所列验证；真实模型、ERPNext 认证只读联调、真实 Langfuse 入库尚未验收，不能视为全部完成。
+首次代码交付记录（2026-10-30；不代表最新验收状态）。当时结论：基础工程已落地并通过所列验证；真实模型、ERPNext 认证只读联调、真实 Langfuse 入库尚未验收，不能视为全部完成。
 
 ## 来源与环境
 

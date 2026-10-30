@@ -1,0 +1,146 @@
+{
+  "timestamp": "2026-10-30T08:28:17.593Z",
+  "status": "failed",
+  "scope": "Real browser -> Next.js -> FastAPI/SSE -> Agent -> MCP -> ERPNext read-only",
+  "thread_id": "04c081cf-1950-46ee-92a5-d9f3d39b53be",
+  "http_status": 200,
+  "event_counts": {
+    "thinking": 2,
+    "phase": 2,
+    "tool_start": 11,
+    "tool_args": 1107,
+    "todo_update": 7,
+    "tool_result": 11,
+    "tool_end": 11,
+    "token": 1677,
+    "error": 1,
+    "done": 1
+  },
+  "tools": [
+    "read_skill",
+    "write_todos",
+    "write_todos",
+    "task",
+    "read_skill",
+    "erpnext_suppliers",
+    "erpnext_items",
+    "erpnext_warehouses",
+    "erpnext_bins",
+    "erpnext_purchase_orders",
+    "write_todos"
+  ],
+  "todo_states": [
+    [
+      {
+        "id": "todo-0",
+        "content": "读取 ERPNext 采购只读 Skill，确认字段/分页/权限口径",
+        "status": "in_progress"
+      },
+      {
+        "id": "todo-1",
+        "content": "委派 procurement-order 子Agent，按 MCP 真实工具各查一次：Supplier/Item/Bin/Purchase Order(limit=3)、Warehouse(limit=4)",
+        "status": "pending"
+      },
+      {
+        "id": "todo-2",
+        "content": "独立 Review：核对数据来自真实工具结果、无重复查询、无写入、无旧 Java 字段",
+        "status": "pending"
+      },
+      {
+        "id": "todo-3",
+        "content": "输出五类样本行数与 has_more 表、采购订单表、库存表，并说明表头无订单行仓库隔离",
+        "status": "pending"
+      }
+    ],
+    [
+      {
+        "id": "todo-0",
+        "content": "读取 ERPNext 采购只读 Skill，确认字段/分页/权限口径",
+        "status": "completed"
+      },
+      {
+        "id": "todo-1",
+        "content": "委派 procurement-order 子Agent，按 MCP 真实工具各查一次：Supplier/Item/Bin/Purchase Order(limit=3)、Warehouse(limit=4)",
+        "status": "in_progress"
+      },
+      {
+        "id": "todo-2",
+        "content": "独立 Review：核对数据来自真实工具结果、无重复查询、无写入、无旧 Java 字段",
+        "status": "pending"
+      },
+      {
+        "id": "todo-3",
+        "content": "输出五类样本行数与 has_more 表、采购订单表、库存表，并说明表头无订单行仓库隔离",
+        "status": "pending"
+      }
+    ],
+    [
+      {
+        "id": "todo-0",
+        "content": "读取 ERPNext 采购只读 Skill，确认字段/分页/权限口径",
+        "status": "completed"
+      },
+      {
+        "id": "todo-1",
+        "content": "委派 procurement-order 子Agent，按 MCP 真实工具各查一次：Supplier/Item/Bin/Purchase Order(limit=3)、Warehouse(limit=4)",
+        "status": "completed"
+      },
+      {
+        "id": "todo-2",
+        "content": "独立 Review：核对数据来自真实工具结果、无重复查询、无写入、无旧 Java 字段",
+        "status": "in_progress"
+      },
+      {
+        "id": "todo-3",
+        "content": "输出五类样本行数与 has_more 表、采购订单表、库存表，并说明表头无订单行仓库隔离",
+        "status": "pending"
+      }
+    ]
+  ],
+  "errors": [
+    {
+      "type": "error",
+      "message": "服务内部错误: No streaming chunk received for 120.0s (model=deepseek-flash, chunks_received=1). The connection may be alive at the TCP layer but is not producing content. Tune or disable via the `stream_chunk_timeo"
+    }
+  ],
+  "page_errors": [],
+  "table_count": 6,
+  "table_text": [
+    "类别调用成功返回行数has_more备注Supplier是3truescope: Frappe API user permissions (shared master)Item是3truescope: Frappe API user permissions (shared master)Warehouse是4falsescope: company + warehouse allowlist + Frappe API user permissionsBin是3truescope: company-verified warehouse allowlist + Frappe API user permissionsPurchase Order是3truescope: company + Frappe API user permissions（仅表头，无仓库过滤）",
+    "namesupplier_namesupplier_groupsupplier_typedisabled演示-义乌辅料演示-义乌辅料演示-服饰供应商Company0演示-宁波成衣演示-宁波成衣演示-服饰供应商Company0演示-杭州织造演示-杭州织造演示-服饰供应商Company0",
+    "nameitem_codeitem_nameitem_groupstock_uomis_stock_itemdisabledDEMO-ACC-LDEMO-ACC-L演示-服饰吊牌演示-面辅料Nos10DEMO-ACC-TDEMO-ACC-T演示-缝纫线卷演示-面辅料Nos10DEMO-EQP-01DEMO-EQP-01演示-门店收银设备演示-服务与设备Nos00",
+    "namewarehouse_namecompanyis_groupdisabled演示-上海门店仓 - Mundane演示-上海门店仓梦迪恩服饰00演示-杭州总仓 - Mundane演示-杭州总仓梦迪恩服饰00演示-次品仓 - Mundane演示-次品仓梦迪恩服饰00演示-生产在制仓 - Mundane演示-生产在制仓梦迪恩服饰00",
+    "namecompanyitem_codewarehouseactual_qtyreserved_qtyordered_qtyprojected_qtystock_uom93r05iiug6梦迪恩服饰DEMO-PT-K-M演示-上海门店仓 - Mundane15.00.00.015.0Nos93r0s0dr3f梦迪恩服饰DEMO-TS-B-M演示-上海门店仓 - Mundane25.00.00.025.0Nos93r1bknpr9梦迪恩服饰DEMO-HD-G-L演示-杭州总仓 - Mundane97.010.028.0115.0Nos",
+    "namesuppliercompanystatusgrand_totalcurrencytransaction_dateschedule_dateper_receivedper_billedPUR-ORD-2026-00001演示-杭州织造梦迪恩服饰Completed2560.0CNY2026-09-042026-09-09100.0100.0PUR-ORD-2026-00002演示-绍兴面料梦迪恩服饰Completed3060.0CNY2026-09-052026-09-10100.0100.0PUR-ORD-2026-00003演示-宁波成衣梦迪恩服饰Completed6800.0CNY2026-09-062026-09-11100.0100.0"
+  ],
+  "assistant_text": [
+    "Skill 已读取，口径确认：has_more 判断分页、采购订单仅表头不按仓库过滤、actual_qty 为实物库存。现在委派子 Agent 执行真实查询。\nsummary\n本次共调用 5 次只读查询工具（每类 1 次，limit/offset 按要求，无翻页、无补查），5 次全部成功返回，无任何错误（无认证失败、无权限失败、无配置缺失、无空结果报错）。5 类数据的 has_more 均为 true，仅 Warehouse 为 false，因此任一单页结果都不能当作全量数据使用。\n类别调用成功返回行数has_more备注Supplier是3truescope: Frappe API user permissions (shared master)Item是3truescope: Frappe API user permissions (shared master)Warehouse是4falsescope: company + warehouse allowlist + Frappe API user permissionsBin是3truescope: company-verified warehouse allowlist + Frappe API user permissionsPurchase Order是3truescope: company + Frappe API user permissions（仅表头，无仓库过滤）\nSupplier（3 行 / has_more=true）\nnamesupplier_namesupplier_groupsupplier_typedisabled演示-义乌辅料演示-义乌辅料演示-服饰供应商Company0演示-宁波成衣演示-宁波成衣演示-服饰供应商Company0演示-杭州织造演示-杭州织造演示-服饰供应商Company0\nItem（3 行 / has_more=true）\nnameitem_codeitem_nameitem_groupstock_uomis_stock_itemdisabledDEMO-ACC-LDEMO-ACC-L演示-服饰吊牌演示-面辅料Nos10DEMO-ACC-TDEMO-ACC-T演示-缝纫线卷演示-面辅料Nos10DEMO-EQP-01DEMO-EQP-01演示-门店收银设备演示-服务与设备Nos00\nWarehouse（4 行 / has_more=false）\nnamewarehouse_namecompanyis_groupdisabled演示-上海门店仓 - Mundane演示-上海门店仓梦迪恩服饰00演示-杭州总仓 - Mundane演示-杭州总仓梦迪恩服饰00演示-次品仓 - Mundane演示-次品仓梦迪恩服饰00演示-生产在制仓 - Mundane演示-生产在制仓梦迪恩服饰00\nBin（3 行 / has_more=true） — 数量为原始字符串\nnamecompanyitem_codewarehouseactual_qtyreserved_qtyordered_qtyprojected_qtystock_uom93r05iiug6梦迪恩服饰DEMO-PT-K-M演示-上海门店仓 - Mundane15.00.00.015.0Nos93r0s0dr3f梦迪恩服饰DEMO-TS-B-M演示-上海门店仓 - Mundane25.00.00.025.0Nos93r1bknpr9梦迪恩服饰DEMO-HD-G-L演示-杭州总仓 - Mundane97.010.028.0115.0Nos\norders\nPurchase Order 表头（3 行 / has_more=true，docstatus 均为 1 已提交）\nnamesuppliercompanystatusgrand_totalcurrencytransaction_dateschedule_dateper_receivedper_billedPUR-ORD-2026-00001演示-杭州织造梦迪恩服饰Completed2560.0CNY2026-09-042026-09-09100.0100.0PUR-ORD-2026-00002演示-绍兴面料梦迪恩服饰Completed3060.0CNY2026-09-052026-09-10100.0100.0PUR-ORD-2026-00003演示-宁波成衣梦迪恩服饰Completed6800.0CNY2026-09-062026-09-11100.0100.0\nsource_scope\n\n数据来源：当前固定 API 用户权限下的 ERPNext 只读接口（erpnext_suppliers / erpnext_items / erpnext_warehouses / erpnext_bins / erpnext_purchase_orders）。\nSupplier / Item：共享主数据，按 Frappe API user permissions 过滤。\nWarehouse / Bin：受公司 + 仓库白名单限制；Bin 查询前已按\"先验证仓库所属公司、再按白名单\"逻辑返回（scope 字段原文含 company-verified warehouse allowlist）。\nPurchase Order：按公司 + Frappe 权限过滤，仅返回表头，不按仓库过滤；本结果未校验订单行仓库。\n每类仅第一页（offset=0）样本，不代表全量。\n\nlimitations\n\n单页样本，非全量：Supplier、Item、Bin、Purchase Order 的 has_more 均为 true，不可推断总量；按要求未翻页、未补查。\n公司名称差异：工具返回的 company 字段值为「梦迪恩服饰」，与任务描述中的「梦迪恩服饰演示库」不完全一致；未做任何推断或改写，按原始返回值呈现，请主 Agent 核对公司命名口径。\nPurchase Order 仅表头：无订单行（item_code/qty/rate）、无 warehouse 字段，不能声称已校验订单行的仓库或收货仓库；status 为 ERPNext 原始字符串（如 Completed），非数字状态。\nBin 数量以字符串返回（如 \"15.0\"），未做数值换算；按定义 actual_qty 为实物库存，projected_qty 为含计划因素的预计数量，不等于可用库存。\nhas_more=false 仅说明当前筛选（company + 仓库白名单）范围内的本页已是该结果集的末页，不代表库外数据不存在。\n无错误类别需要报告：本次 5 次调用均无认证失败、权限失败、配置缺失；无\"未知行数/未知 has_more\"的情况。\n\n写入操作说明：本次未发生任何写入操作（无创建、修改、提交、取消、审批）；若后续需要写操作，阶段一尚未启用，工具也不提供写能力。"
+  ],
+  "raw_sse_saved_to_git": false,
+  "failure_reason": "Provider stream produced no parsed content for 120 seconds after successful ERP reads; final main answer, plan completion and independent Review did not finish.",
+  "langfuse": {
+    "status": "failed",
+    "trace_id": "da2f7b07784e8c85b34cb69698e9fe9f",
+    "root_found": true,
+    "observations": 100,
+    "generations": 7,
+    "tools": [
+      "tool.write_todos",
+      "tool.erpnext_purchase_orders",
+      "tool.erpnext_bins",
+      "tool.erpnext_warehouses",
+      "tool.erpnext_items",
+      "tool.erpnext_suppliers",
+      "tool.read_skill",
+      "tool.task",
+      "tool.write_todos",
+      "tool.read_skill",
+      "tool.write_todos"
+    ],
+    "total_tokens": 48403,
+    "usage_present_for_every_generation": false,
+    "business_payloads_empty": true,
+    "has_more": false
+  },
+  "trace_url": "https://us.cloud.langfuse.com/project/cmvub6405005sad0mm6rjufnw/traces/da2f7b07784e8c85b34cb69698e9fe9f"
+}

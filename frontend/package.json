@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "tsc src/lib/types.ts src/lib/sse-parser.ts --outDir .test-dist --module commonjs --target es2020 --skipLibCheck && node --test tests/*.cjs"
+    "test": "tsc src/lib/types.ts src/lib/sse-parser.ts src/lib/todo-status.ts --outDir .test-dist --module commonjs --target es2020 --skipLibCheck && node --test tests/*.cjs"
   },
   "dependencies": {
     "lucide-react": "^1.27.0",

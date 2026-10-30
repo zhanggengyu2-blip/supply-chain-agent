@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-10-30T08:38:08.029Z",
+  "thread_id": "afe61f02-39f8-4aca-a52f-6a8061bbb6ab",
+  "status": "passed",
+  "scope": "Real browser + real model + Supplier GET; targeted completed-status rendering check after UI fix",
+  "sse_todo_states": [
+    [
+      {
+        "id": "todo-0",
+        "content": "查询供应商样本（limit=1）",
+        "status": "in_progress"
+      },
+      {
+        "id": "todo-1",
+        "content": "汇总结果（name、样本数、has_more）",
+        "status": "pending"
+      }
+    ],
+    [
+      {
+        "id": "todo-0",
+        "content": "查询供应商样本（limit=1）",
+        "status": "completed"
+      },
+      {
+        "id": "todo-1",
+        "content": "汇总结果（name、样本数、has_more）",
+        "status": "completed"
+      }
+    ]
+  ],
+  "final_checkpoint_completed": true,
+  "expected_progress": "2/2",
+  "rendered_progress_found": true,
+  "errors": [],
+  "page_errors": [],
+  "tools": [
+    "write_todos",
+    "erpnext_suppliers",
+    "write_todos"
+  ]
+}

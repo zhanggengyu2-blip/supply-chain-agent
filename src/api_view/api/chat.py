@@ -385,8 +385,23 @@ async def stream_chat_response(
 
     except Exception as e:
         web_logger.error(f"Stream error for thread {thread_id}: {e}", exc_info=True)
-        yield sse_event("error", {"message": f"服务内部错误: {str(e)[:200]}"})
-        yield sse_event("done", {"thread_id": thread_id, "interrupted": False})
+        # Preserve partial evidence without claiming the interrupted run succeeded.
+        partial = list(display_messages)
+        if assistant_content:
+            partial.append({
+                "id": str(uuid.uuid4()), "role": "assistant",
+                "content": assistant_content + "\n\n> 本次执行中断，以上为部分结果，任务尚未完成。",
+                "toolCalls": tool_calls_buffer or None,
+                "execution_status": "failed", "timestamp": datetime.now().isoformat(),
+            })
+        try:
+            await agent_loader.save_display_messages(thread_id, partial)
+            await agent_loader.save_harness_trace(thread_id, harness_trace)
+        except Exception:
+            web_logger.error("Could not persist interrupted execution")
+        yield sse_event("error", {"code": "execution_failed",
+            "message": "执行中断，本次任务未完成。已返回的数据仅为部分结果，请稍后重试。"})
+        yield sse_event("done", {"thread_id": thread_id, "interrupted": False, "failed": True})
     finally:
         reset_runtime(runtime_tokens)
         reset_sandbox(sandbox_token)

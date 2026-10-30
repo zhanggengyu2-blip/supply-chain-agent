@@ -2,7 +2,7 @@
 
 基于 08ded02cc14228fa36d9b5706caa7bc8144355f6。
 
-运行环境中的 `.venv/`、`node_modules/`、`.next/`、`.pnpm-store/` 和未含密钥的本地 `.env` 不纳入 Git。
+运行环境中的 `.venv/`、`node_modules/`、`.next/`、`.pnpm-store/` 和含真实凭据的本地 `.env` 不纳入 Git。
 
 - `.env.example`
 - `.gitignore`
@@ -99,3 +99,35 @@
 - `tests/test_model_configuration.py`
 - `tests/test_phase1_acceptance.py`
 - `tests/test_stream_formatting.py`
+
+
+## 专用只读用户与真实 ERP 端到端验收
+
+仅账户/角色/用户权限配置通过官方 API 修改，业务写入仍禁用。修复真实超时失败状态、待办状态契约及移动目录后的 pnpm 缓存配置；最新结论见 PHASE1_ACCEPTANCE.md。
+
+- `scripts/configure_erpnext_reader.py`
+- `tests/test_reader_configuration.py`
+- `src/api_view/api/chat.py`
+- `tests/test_stream_formatting.py`
+- `frontend/src/hooks/useChat.ts`
+- `frontend/src/lib/types.ts`
+- `frontend/src/lib/todo-status.ts`
+- `frontend/src/components/chat/TodoListPanel.tsx`
+- `frontend/tests/todo-status.test.cjs`
+- `frontend/package.json`
+- `frontend/pnpm-workspace.yaml`
+- `README.md`
+- `docs/CONFIGURE_READONLY_AND_LANGFUSE.md`
+- `docs/PHASE1.md`
+- `docs/START_PHASE1.md`
+- `docs/PHASE1_ACCEPTANCE.md`
+- `docs/CHANGES.md`
+- `docs/evidence/erpnext-reader-configuration.json`
+- `docs/evidence/closeout-erp-authenticated.json`
+- `docs/evidence/closeout-erp-scope.json`
+- `docs/evidence/closeout-erp-pytest.txt`
+- `docs/evidence/closeout-erp-workbench.json` / `.jpg`
+- `docs/evidence/closeout-erp-workbench-failed.json` / `.jpg`
+- `docs/evidence/closeout-todo-ui.json` / `.jpg`
+- `docs/evidence/closeout-check.txt`
+- `docs/evidence/closeout-mongo.txt`

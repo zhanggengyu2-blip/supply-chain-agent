@@ -1,0 +1,772 @@
+{
+  "timestamp": "2026-10-30T16:21:21.760183+08:00",
+  "scope": "Phase-one acceptance, no ERP writes",
+  "configuration": {
+    "model_key_configured": true,
+    "erp_missing": [],
+    "langfuse_missing": [],
+    "tracing_enabled": true
+  },
+  "services": {
+    "web": {
+      "status": "failed",
+      "error_type": "ConnectError"
+    },
+    "api": {
+      "status": "passed",
+      "http_status": 200
+    },
+    "erp_public_entry": {
+      "status": "passed",
+      "http_status": 200
+    }
+  },
+  "mcp": {
+    "status": "passed",
+    "tools": [
+      "erpnext_bins",
+      "erpnext_items",
+      "erpnext_purchase_orders",
+      "erpnext_suppliers",
+      "erpnext_warehouses"
+    ],
+    "write_tools_registered": false
+  },
+  "model": {
+    "status": "not_tested",
+    "reason": "Model check not requested; --model explicitly runs the configured endpoint."
+  },
+  "erp": {
+    "status": "passed",
+    "identity_verified": true,
+    "tools": {
+      "Supplier": {
+        "status": "passed",
+        "rows": 5,
+        "has_more": false,
+        "rest_mcp_match": true,
+        "sample_available": true,
+        "data_fingerprint": "a5602b8d50d3319904ec0a5df93b7b5cf7b088bb9a55a7f024ded05cd0945a86"
+      },
+      "Item": {
+        "status": "passed",
+        "rows": 5,
+        "has_more": true,
+        "rest_mcp_match": true,
+        "sample_available": true,
+        "data_fingerprint": "5d1193bfa9f089213dd7c8c031283ad4778a8b09d8d37f1dbd8d9ed9287a3c03"
+      },
+      "Warehouse": {
+        "status": "passed",
+        "rows": 4,
+        "has_more": false,
+        "rest_mcp_match": true,
+        "sample_available": true,
+        "data_fingerprint": "3a1f15c10cbcf3ba2618af82409c7f9f010d4aeba4b88770179e83dae7b41638"
+      },
+      "Bin": {
+        "status": "passed",
+        "rows": 5,
+        "has_more": true,
+        "rest_mcp_match": true,
+        "sample_available": true,
+        "data_fingerprint": "29e7a879b6a1e4e10b8a1a0306534143f476bffa3252eedcc13cc756e326a9a3"
+      },
+      "Purchase Order": {
+        "status": "passed",
+        "rows": 5,
+        "has_more": true,
+        "rest_mcp_match": true,
+        "sample_available": true,
+        "data_fingerprint": "756509656e90864a13392901d1178133ebe881898ed2e3c270d5feb107c657e0"
+      }
+    },
+    "permissions": {
+      "status": "passed",
+      "checks": [
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Supplier",
+          "scope": "sample_document",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Item",
+          "scope": "sample_document",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Warehouse",
+          "scope": "sample_document",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Bin",
+          "scope": "sample_document",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Order",
+          "scope": "sample_document",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Entry",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Stock Reconciliation",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Receipt",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "write",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "create",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "delete",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "submit",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "cancel",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "amend",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "import",
+          "allowed": false
+        },
+        {
+          "doctype": "Purchase Invoice",
+          "scope": "doctype",
+          "permission": "share",
+          "allowed": false
+        }
+      ],
+      "limitation": "Only listed DocTypes and returned sample documents are audited; this is not proof of account-wide permissions."
+    },
+    "limitation": "Purchase Order headers are company-scoped; line-level warehouse scope is not implemented."
+  },
+  "langfuse": {
+    "status": "not_tested",
+    "reason": "No real execution trace ID yet"
+  },
+  "workbench_business_task": {
+    "status": "not_tested",
+    "reason": "Run in the UI after model, ERP permissions and tracing are verified."
+  }
+}

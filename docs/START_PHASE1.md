@@ -1,15 +1,15 @@
 # 本地启动
 
-工程路径：`/Users/zhanggengyu/Documents/极简AI团队需求管理智能体/供应链协同Agent`。
+工程路径：`/Users/zhanggengyu/Documents/供应链协同Agent`。
 
-本次已安装 `.venv`、前端依赖，创建未填写密钥的 `.env`，并启动本项目独立 MongoDB。无需更改 ERPNext 原目录。
+本机已安装 `.venv`、前端依赖，并在 Git 忽略的 `.env` 配齐 DeepSeek、专用 ERPNext 只读账户和 Langfuse。Agent 使用独立 MongoDB，无需更改 ERPNext 原目录。
 
 ## 直接启动
 
 在当前工程的终端执行：
 
 ```bash
-cd '/Users/zhanggengyu/Documents/极简AI团队需求管理智能体/供应链协同Agent'
+cd '/Users/zhanggengyu/Documents/供应链协同Agent'
 docker compose up -d mongo
 ```
 
@@ -44,7 +44,7 @@ docker compose up -d mongo
 |---|---|
 | DEEPSEEK_API_KEY、LLM_MODEL、LLM_BASE_URL | 主 Agent、Review 路由和评分模型；模型名需确认为账户实际可用 |
 | ERPNEXT_BASE_URL | 默认 http://127.0.0.1:8080 |
-| ERPNEXT_API_KEY / ERPNEXT_API_SECRET | 用户自行准备的专用只读账户 token；不使用 Administrator |
+| ERPNEXT_API_KEY / ERPNEXT_API_SECRET | 已配置的专用只读账户 token；不使用 Administrator |
 | ERPNEXT_API_USER | 实际 API 用户名，用 get_logged_user 进行一致性校验 |
 | ERPNEXT_COMPANY | 公司完整名称，与 ERPNext 中一致 |
 | ERPNEXT_WAREHOUSES | 允许的仓库完整 name，逗号分隔 |
@@ -52,11 +52,11 @@ docker compose up -d mongo
 | MCP_SERVER_URL | 默认 http://127.0.0.1:9000 |
 | ERP_LANGFUSE_ENABLED | 默认 false，凭据齐备后改为 true |
 | LANGFUSE_BASE_URL / PUBLIC_KEY / SECRET_KEY | 分别填写 LANGFUSE_BASE_URL、LANGFUSE_PUBLIC_KEY、LANGFUSE_SECRET_KEY |
-| ERP_TRACE_HASH_KEY | 用户自己提供的随机伪匿名化密钥，用来散列用户/会话标识 |
+| ERP_TRACE_HASH_KEY | 已在本地生成的随机伪匿名化密钥，用来散列用户/会话标识 |
 
-修改 `.env` 后重启 API 和 MCP。DeepSeek 与 Langfuse 已配置并完成真实验证；ERPNext 认证和范围配置仍缺失。准备步骤见 [配置说明](CONFIGURE_READONLY_AND_LANGFUSE.md)。
+修改 `.env` 后重启 API 和 MCP。DeepSeek、Langfuse 和 ERPNext 专用只读账户已配置；五类 ERPNext 认证查询、REST/MCP 比对及有效业务写权限审计已通过。最新端到端结果见 [验收记录](PHASE1_ACCEPTANCE.md)。账户维护方法见 [配置说明](CONFIGURE_READONLY_AND_LANGFUSE.md)。
 所有聊天会话共享一个固定 ERP 用户；当前 Web API 没有生产登录鉴权，只允许本机开发访问。
-采购订单只读能力目前是表头查询，公司范围生效；订单行、仓库级采购权限未验收。
+当前授权公司为既有演示库“梦迪恩服饰”，允许 4 个演示仓库。采购订单只读能力目前是表头查询，公司范围生效；订单行及严格仓库级采购隔离尚未实现。
 
 ## 重新安装环境
 
@@ -72,6 +72,7 @@ source scripts/runtime-env.sh
 
 本机也可用现有 Python 路径创建环境：
 `/Users/zhanggengyu/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3`。
+`frontend/pnpm-workspace.yaml` 固定相对 `storeDir`，使安装、测试、启动共用工程内缓存。移动工程后需重新执行上述锁文件安装；Python 虚拟环境如因绝对路径失效则按锁文件重建。
 首次新建配置时从 `.env.example` 复制，**不要覆盖已填写的 .env**。
 锁文件目前在 macOS ARM64 验证；其他平台需要单独复核二进制依赖兼容性。
 

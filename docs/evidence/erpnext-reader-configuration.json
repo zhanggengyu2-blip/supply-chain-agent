@@ -1,0 +1,490 @@
+{
+  "timestamp": "2026-10-30T10:11:23.092213+08:00",
+  "mode": "apply",
+  "user": "supply-chain-agent-phase1@example.invalid",
+  "role": "Supply Chain Agent Phase1 Reader",
+  "company": "梦迪恩服饰",
+  "warehouses": [
+    "演示-杭州总仓 - Mundane",
+    "演示-上海门店仓 - Mundane",
+    "演示-次品仓 - Mundane",
+    "演示-生产在制仓 - Mundane"
+  ],
+  "business_writes_allowed": false,
+  "administrator_api_key_generated": false,
+  "permission_audit": {
+    "status": "passed",
+    "checks": [
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Supplier",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Item",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Warehouse",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Bin",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Order",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Entry",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Stock Reconciliation",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Receipt",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "write",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "create",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "delete",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "submit",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "cancel",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "amend",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "import",
+        "allowed": false
+      },
+      {
+        "doctype": "Purchase Invoice",
+        "scope": "doctype",
+        "permission": "share",
+        "allowed": false
+      }
+    ],
+    "limitation": "Only listed DocTypes and returned sample documents are audited; this is not proof of account-wide permissions."
+  },
+  "status": "passed",
+  "existing_role_permissions_preserved": true,
+  "business_counts_before": {
+    "Supplier": 5,
+    "Item": 20,
+    "Warehouse": 16,
+    "Bin": 31,
+    "Purchase Order": 6
+  },
+  "business_counts_after": {
+    "Supplier": 5,
+    "Item": 20,
+    "Warehouse": 16,
+    "Bin": 31,
+    "Purchase Order": 6
+  },
+  "reader_roles": [
+    "Supply Chain Agent Phase1 Reader"
+  ],
+  "identity_verified": true,
+  "effective_write_permissions_denied": 72,
+  "reader_user_type": "Website User",
+  "desk_user_inheritance_removed": true,
+  "admin_write_requests": [
+    {
+      "method": "PUT",
+      "path": "/api/resource/Role/Supply%20Chain%20Agent%20Phase1%20Reader"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/resource/User/supply-chain-agent-phase1%40example.invalid"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/resource/User/supply-chain-agent-phase1%40example.invalid"
+    }
+  ]
+}

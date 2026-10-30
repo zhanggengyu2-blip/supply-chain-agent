@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ChatMessage, ToolCallInfo, SSEEvent, InterruptData, TodoItem } from "@/lib/types";
 import { streamChat, resumeChat } from "@/lib/api";
 import { useSSE } from "./useSSE";
+import { todoStatus } from "@/lib/todo-status";
 
 const USER_ID = "user-001";
 const USERNAME = "采购管理员";
@@ -133,7 +134,7 @@ export function useChat() {
             const items: TodoItem[] = event.todos.map((t) => ({
               id: t.id || `todo-${Math.random().toString(36).slice(2)}`,
               content: t.content || "",
-              status: (t.status as TodoItem["status"]) || "pending",
+              status: todoStatus(t.status),
             }));
             setTodoItems(items);
             setTodoVisible(true);
@@ -152,7 +153,7 @@ export function useChat() {
                 const items: TodoItem[] = args.todos.map((t: Record<string, unknown>, i: number) => ({
                   id: (t.id as string) || `todo-${i}`,
                   content: (t.content as string) || "",
-                  status: (t.status as TodoItem["status"]) || "pending",
+                  status: todoStatus(t.status),
                 }));
                 setTodoItems(items);
                 setTodoVisible(true);
@@ -166,13 +167,15 @@ export function useChat() {
 
         case "done":
           setStreaming(false);
+          if (event.failed) {
+            setPhase("idle");
+            setPhaseLabel("执行失败");
+            break;
+          }
           setPhase("done");
           setPhaseLabel("✅ 完成");
-          setTodoItems((prev) =>
-            prev.map((item) =>
-              item.status !== "cancelled" ? { ...item, status: "complete" as const } : item
-            )
-          );
+          // Todo statuses come only from the checkpoint's todo_update events.
+          // A closed stream cannot prove that pending tasks were completed.
           if (event.interrupted) {
             setInterrupted(true);
           }
