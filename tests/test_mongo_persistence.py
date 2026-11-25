@@ -1,4 +1,4 @@
-"""Real Agent MongoDB integration, isolated disposable test database; no ERP access."""
+"""真实 Agent MongoDB 集成测试，使用隔离的一次性测试库，不访问 ERP。"""
 import os
 import uuid
 import pytest
@@ -21,7 +21,7 @@ async def test_checkpoint_interrupt_and_store_survive_new_connections():
     executed=[]
     @tool
     def local_proposal() -> str:
-        """Pure local approval test. No ERP access."""
+        """纯本地审批测试，不访问 ERP。"""
         executed.append(True)
         return "approved"
     def build(client, responses):
@@ -42,7 +42,7 @@ async def test_checkpoint_interrupt_and_store_survive_new_connections():
         assert result["messages"][-1].content=="restored"
         store=MongoDBStore(uri=uri,db_name=db)
         store.put(("test-user",),"preference",{"language":"zh"})
-        # Reopen a separate Store client, proving data is in MongoDB.
+        # 重新打开独立的 Store 客户端，证明数据已保存在 MongoDB 中。
         second=MongoDBStore(uri=uri,db_name=db)
         assert second.get(("test-user",),"preference").value=={"language":"zh"}
         second._client.close()

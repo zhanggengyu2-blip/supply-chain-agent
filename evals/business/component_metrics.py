@@ -1,4 +1,4 @@
-"""Offline component evidence. No Docker/MongoDB or real model benchmark."""
+"""离线组件验证证据，不涉及 Docker、MongoDB 或真实模型基准测试。"""
 import io
 import json
 import unittest

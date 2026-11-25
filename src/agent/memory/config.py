@@ -94,8 +94,8 @@ class MemoryConfig:
         )
 
 
-# Load .env when the optional application dependency is installed; the pure
-# memory unit tests can still run with only the standard library.
+# 安装了应用可选依赖时才加载 .env；纯记忆模块单元测试
+# 仍可仅使用 Python 标准库运行。
 try:
     from .. import env_utils as _env_utils
 except ModuleNotFoundError as exc:

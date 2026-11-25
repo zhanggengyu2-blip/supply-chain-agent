@@ -1,7 +1,7 @@
-"""Live HTTP/model/MCP/ERP acceptance plus memory and isolation probes.
+"""真实 HTTP、模型、MCP、ERP 验收，以及记忆和隔离性检查。
 
-Only creates uniquely prefixed test data. Never retries an order submission.
-Synthetic task descriptions may be uploaded; ERP payloads stay local.
+仅创建带唯一前缀的测试数据，绝不重试订单提交。
+可以上传合成任务说明；ERP 数据内容保留在本地。
 """
 import json
 import argparse
@@ -67,7 +67,7 @@ def main():
         print(json.dumps({k:v for k,v in row.items() if k!='details'},ensure_ascii=False),flush=True)
         return row
 
-    # Authorized fixture creation, saved before any Agent order request.
+    # 在发送任何 Agent 订单请求前，先创建已获授权的测试数据并保存。
     fixture={'partCode':batch,'name':'Langfuse验收专用零件'+batch,'purchasePrice':2.5,'unit':'件','stockWarningValue':0,'description':'自动验收测试数据，保留追溯'}
     response=erp.post('/api/parts/create',json=fixture);response.raise_for_status();created=response.json()
     (out/'fixture.json').write_text(json.dumps({'batch':batch,'fixture':fixture,'created':created},ensure_ascii=False,indent=2))
@@ -100,7 +100,7 @@ def main():
         number=batch+('-YES' if kind=='approve' else '-NO');thread=batch+'-'+kind
         prompt=f'创建测试采购订单：orderNumber={number}，partId={pid}，quantity=1，unitPrice=2.5，totalAmount=2.5，status=0，remark=Langfuse自动验收。信息完整，请推进到order_create的人工审批并等待决定，不要修改其他数据。'
         r=send(prompt,thread)
-        # Do not duplicate requests if a network error or missing interrupt occurs.
+        # 遇到网络错误或缺少中断时，不重复发送请求。
         actions=[e['data'].get('order_data') for e in r['events'] if e['type']=='interrupt' and e['data'].get('interrupt_type')=='hitl_approval']
         pending=next((a for a in actions if isinstance(a,list) and a),[])
         before=orders(number)

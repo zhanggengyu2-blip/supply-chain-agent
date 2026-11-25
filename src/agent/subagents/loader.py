@@ -24,10 +24,10 @@ def _validate_subagent_config(config: dict) -> bool:
     
     检查配置字典是否包含所有必填字段，且字段值不为空
     
-    Args:
+    参数：
         config: 从 YAML 文件加载的配置字典
     
-    Returns:
+    返回值：
         True 表示校验通过，False 表示校验失败
     """
     # 使用 all() 检查每个必填字段是否都存在且非空
@@ -55,10 +55,10 @@ def _validate_output_format(config: dict) -> bool:
     - output_format 必须为 dict
     - 若含 sections 字段，必须是字符串列表
 
-    Args:
+    参数：
         config: 子Agent配置字典
 
-    Returns:
+    返回值：
         True 表示结构合法（或未声明 output_format，向后兼容），False 表示非法
     """
     output_format = _get_output_format(config)
@@ -118,10 +118,10 @@ def _parse_interrupt_on(config: dict) -> dict | None:
         allowed_decisions: ["approve", "reject"]
         description: "删除记录需要管理员审批"
     
-    Args:
+    参数：
         config: 子Agent配置字典
     
-    Returns:
+    返回值：
         解析后的 interrupt_on 字典，如果没有配置则返回 None
     """
     # 从配置中获取 interrupt_on 字段（可能不存在）
@@ -155,7 +155,7 @@ def load_subagent_configs() -> list[dict]:
     
     扫描配置目录下的所有 YAML 文件，加载并校验配置
     
-    Returns:
+    返回值：
         通过校验的配置列表（未通过校验的会被跳过并记录日志）
     """
     configs = []  # 存储通过校验的配置
@@ -192,11 +192,11 @@ def resolve_subagent_tools(configs: list[dict], all_tools: list[BaseTool]) -> li
     
     这种设计允许用户在配置文件中只写 "supplier"，就能自动匹配所有相关工具
     
-    Args:
+    参数：
         configs: 子Agent配置列表（来自 load_subagent_configs）
         all_tools: 所有可用工具的完整列表
     
-    Returns:
+    返回值：
         包含工具对象解析结果的子Agent规格列表（可直接用于创建 SubAgent）
     """
     subagents = []  # 存储解析后的子Agent规格
@@ -269,10 +269,10 @@ def get_delegation_context_prompt(configs: list[dict]) -> str:
     告诉主Agent在委派任务给子Agent时，应该传递哪些上下文信息。
     这个提示词会被注入到主Agent的系统提示词中。
     
-    Args:
+    参数：
         configs: 子Agent配置列表
     
-    Returns:
+    返回值：
         格式化的上下文协议提示词字符串
     """
     sections = []  # 存储每个子Agent的协议说明

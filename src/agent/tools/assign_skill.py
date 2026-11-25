@@ -16,11 +16,11 @@ SKILLS_BASE_DIR = Path(__file__).parent.parent.parent / "skills"
 def assign_skill(skill_name: str, agent_name: str = "main") -> str:
     """将技能分配给指定的 Agent。
 
-    Args:
+    参数：
         skill_name: 技能名称（目录名），例如 "procurement-analysis"
         agent_name: 目标Agent名称，"main" 表示主Agent，其他为子Agent名称
 
-    Returns:
+    返回值：
         分配结果描述
     """
     # 查找技能目录

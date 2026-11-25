@@ -1,4 +1,4 @@
-"""In-process ERP transport fixture. Never contacts a real ERP."""
+"""进程内的 ERP 传输测试夹具，不连接真实 ERP。"""
 import copy
 from langchain_core.tools import StructuredTool
 
@@ -36,7 +36,7 @@ class ERP:
     async def post(self,path,json_data=None,params=None,**kwargs):
         self.events.append({'method':'POST','path':path,'data':json_data,'params':params,'phase':self.phase})
         if path!='/api/orders/create':return self.answer(None,501,'Fixture write endpoint not implemented')
-        # Do not deduplicate: repeated creates must remain visible to the evaluator.
+        # 不去重：重复创建必须对评估器可见。
         order=copy.deepcopy(json_data or {});order['id']=7001+len(self.orders);self.orders.append(order)
         return self.answer(order)
     async def put(self,path,**kwargs):return await self.post(path,**kwargs)

@@ -1,4 +1,4 @@
-"""Combine retained first runs; never imply they were a single run."""
+"""汇总保留的首次运行结果，不将它们描述成同一次运行。"""
 import json
 from pathlib import Path
 from .run import summarize

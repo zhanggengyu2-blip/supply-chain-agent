@@ -1,4 +1,4 @@
-"""Read-only synthetic HTTP smoke against an already running local backend."""
+"""使用合成数据，对已运行的本地后端进行只读 HTTP 冒烟检查。"""
 import json
 import time
 import uuid

@@ -62,8 +62,8 @@ async def stream_chat_response(
     - 流结束后持久化到 MongoDB
     """
     # 每个用户有独立 Agent（含 Proxy、中间件缓存和 SandboxManager 映射）。
-    session = await agent_loader.get_session(user_id, username)
-    config = traced_config(agent_loader.create_config(thread_id, user_id))
+    session = await agent_loader.get_session(user_id, username) ### 拿到能执行任务的 Agent
+    config = traced_config(agent_loader.create_config(thread_id, user_id)) ### 主要负责给 LangGraph 的运行配置添加可观测性回调。Langfuse 追踪
     if resume_data is not None:
         decisions = resume_data.get('decisions', []) if isinstance(resume_data, dict) else []
         event('hitl.resume', approved=any(d.get('type')=='approve' for d in decisions if isinstance(d,dict)),
@@ -110,7 +110,7 @@ async def stream_chat_response(
 
     try:
         if resume_data is not None:
-            # Recheck under the run lock so duplicate resumes cannot execute twice.
+            # 在持有运行锁时再次校验，避免重复恢复请求执行两次。
             await validate_resume(session.agent, config, resume_data)
         # 发射“深度思考”事件（前端展示思考动画）
         yield sse_event("thinking", {"status": "start"})
@@ -170,7 +170,7 @@ async def stream_chat_response(
                                 })
 
                     # --- 中断检测 ---
-                    # LangGraph emits __interrupt__; retain the legacy state key.
+                    # LangGraph 使用 __interrupt__ 表示中断，同时兼容旧版状态键。
                     interrupts = chunk.get("__interrupt__") or chunk.get("interrupts")
                     if interrupts:
                         for interrupt_item in interrupts:
@@ -249,8 +249,8 @@ async def stream_chat_response(
 
             # ===== Messages 流处理 =====
             if chunk_type == "messages":
-                # Routing output is internal control data, never assistant text
-                # or a user-visible tool invocation.
+                # 路由输出属于内部控制数据，不应作为助手回答
+                # 或用户可见的工具调用展示。
                 metadata = chunk[1] if isinstance(chunk, (tuple, list)) and len(chunk) > 1 else {}
                 internal_grader = any(marker in str(namespace) for marker in ("RubricMiddleware", "rubric_grader"))
                 if internal_grader or (isinstance(metadata, dict) and "review_router" in (metadata.get("tags") or [])):
@@ -267,7 +267,7 @@ async def stream_chat_response(
                 token_type = getattr(token, "type", "")
                 content = getattr(token, "content", "")
                 tool_call_chunks = getattr(token, "tool_call_chunks", None)
-                # Some providers emit complete AIMessage tool calls instead of chunks.
+                # 部分服务商会返回完整 AIMessage 中的工具调用，而不是消息片段。
                 if not tool_call_chunks and token_type == "ai":
                     tool_call_chunks = [
                         {"name": call["name"], "id": call["id"],
@@ -275,7 +275,7 @@ async def stream_chat_response(
                         for call in (getattr(token, "tool_calls", None) or [])
                     ]
 
-                # AIMessage with tool_call_chunks → tool_start / tool_args
+                # 带 tool_call_chunks 的 AIMessage → tool_start / tool_args 事件
                 if tool_call_chunks:
                     # 首次收到工具调用时结束 thinking 状态
                     if not thinking_emitted:
@@ -301,7 +301,7 @@ async def stream_chat_response(
                                 yield sse_event("tool_args", {"args": tc["args"]})
                     continue
 
-                # ToolMessage → tool_result / tool_end
+                # ToolMessage 工具结果消息 → tool_result / tool_end 事件
                 if token_type == "tool":
                     tool_name = getattr(token, "name", "unknown")
                     tool_content = content if isinstance(content, str) else str(content)
@@ -347,7 +347,7 @@ async def stream_chat_response(
                         thinking_emitted = True
                     text_namespace = tuple(namespace or ())
                     if assistant_content and last_text_namespace != text_namespace:
-                        # Child and main answers are separate Markdown documents.
+                        # 子 Agent 与主 Agent 的回答是不同的 Markdown 文档。
                         assistant_content += "\n\n"
                         yield sse_event("token", {"content": "\n\n", "source": "main"})
                     last_text_namespace = text_namespace
@@ -385,7 +385,7 @@ async def stream_chat_response(
 
     except Exception as e:
         web_logger.error(f"Stream error for thread {thread_id}: {e}", exc_info=True)
-        # Preserve partial evidence without claiming the interrupted run succeeded.
+        # 保存已产生的部分证据，但不将中途停止的运行标记为成功。
         partial = list(display_messages)
         if assistant_content:
             partial.append({
@@ -416,16 +416,16 @@ async def chat_stream(request: ChatRequest):
     from ...agent.config import LLM_API_KEY
     if not LLM_API_KEY:
         raise HTTPException(status_code=503, detail="尚未配置模型 API Key，请在本项目 .env 填写 DEEPSEEK_API_KEY 并重启后端")
-    await agent_loader.initialize()
+    await agent_loader.initialize() ###先把 Agent 需要的共享存储设施准备好，后面再按需创建具体用户的 Agent
 
-    thread_id = request.thread_id or agent_loader.generate_thread_id()
-    existing_owner = await agent_loader.get_conversation_user_id(thread_id)
+    thread_id = request.thread_id or agent_loader.generate_thread_id()  # 前端未传入 thread_id 时，生成新的 UUID 作为会话 ID。
+    existing_owner = await agent_loader.get_conversation_user_id(thread_id) ###避免用户 A 直接使用用户 B 已有的 thread_id 继续对话
     if existing_owner and existing_owner != request.user_id:
         raise HTTPException(status_code=403, detail="该会话不属于当前用户")
 
     # 在流开始时就记录归属，确保在中断后 resume 能找到同一个用户沙箱。
-    title = request.message[:20] + "..." if len(request.message) > 20 else request.message
-    await agent_loader.save_conversation(thread_id, request.user_id, title)
+    title = request.message[:20] + "..." if len(request.message) > 20 else request.message ###取用户的前20个字符作为会话标题
+    await agent_loader.save_conversation(thread_id, request.user_id, title) ###保存会话归属和标题，方便后续 resume 和历史记录查询
 
     return StreamingResponse(
         stream_chat_response(
@@ -441,11 +441,11 @@ async def chat_stream(request: ChatRequest):
             "X-Thread-Id": thread_id,
             "X-Accel-Buffering": "no",
         },
-    )
+    ) ###返回 SSE 流响应，前端可通过 EventSource 接收实时消息和事件
 
 
 async def validate_resume(agent, config, payload):
-    """Validate against checkpointed interrupt, including nested subagent interrupts."""
+    """根据检查点中的中断进行校验，包括嵌套子 Agent 的中断。"""
     state = await agent.aget_state(config, subgraphs=True)
     def collect(snapshot):
         found = []

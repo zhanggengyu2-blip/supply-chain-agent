@@ -1,4 +1,4 @@
-"""Audit logic tests use simulated permission responses, never business writes."""
+"""审计逻辑测试使用模拟权限响应，不执行业务写入。"""
 import json
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch

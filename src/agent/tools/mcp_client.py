@@ -1,6 +1,6 @@
 """
 MCP 工具加载模块
-使用 langchain-mcp-adapters 连接 MCP Server（SSE模式），获取所有 ERP 工具
+使用 langchain-mcp-adapters 通过 SSE（服务器发送事件）连接 MCP 服务端，获取所有 ERP 工具
 
 生产级实现：
 - 连接重试（指数退避）
@@ -29,7 +29,7 @@ CACHE_TTL = 300  # 5分钟缓存
 
 
 def direct_mcp_http_client(headers=None, timeout=None, auth=None):
-    """Local MCP traffic must not be routed through OS/environment proxies."""
+    """本地 MCP 流量不得经过操作系统或环境变量配置的代理。"""
     return httpx.AsyncClient(headers=headers, timeout=timeout, auth=auth, trust_env=False)
 
 
@@ -37,10 +37,10 @@ async def load_mcp_tools(force_refresh: bool = False) -> List[BaseTool]:
     """
     异步加载 MCP 工具列表（带重试和缓存）.
 
-    Args:
+    参数：
         force_refresh: 强制刷新缓存
 
-    Returns:
+    返回值：
         MCP 工具列表，连接失败时返回空列表
     """
     global _cached_tools, _cache_time
@@ -117,7 +117,7 @@ def load_mcp_tools_sync(force_refresh: bool = False) -> List[BaseTool]:
         loop = None
 
     if loop and loop.is_running():
-        # 在异步上下文中（如 FastAPI startup）
+        # 在异步上下文中（如 FastAPI 启动阶段）
         import concurrent.futures
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
             future = pool.submit(asyncio.run, load_mcp_tools(force_refresh))

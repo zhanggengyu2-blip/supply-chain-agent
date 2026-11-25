@@ -1,4 +1,4 @@
-"""Explicit opt-in: no credentials are created, and every request is GET."""
+"""必须显式开启；不创建凭据，所有请求均使用 GET。"""
 import os
 import pytest
 from src.mcp_server.erpnext.models import ERPNextSettings, Query, BinQuery, PurchaseOrderQuery

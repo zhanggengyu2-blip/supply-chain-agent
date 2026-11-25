@@ -37,7 +37,7 @@ def download_and_extract(url: str, target_dir: str) -> str:
         if not skill_md_path:
             raise ValueError("技能包中未找到 SKILL.md 文件")
 
-        # 验证 frontmatter
+        # 验证文件头部元数据（frontmatter）
         print("[4/4] 验证 frontmatter...")
         with open(skill_md_path, "r", encoding="utf-8") as f:
             content = f.read()

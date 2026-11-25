@@ -5,14 +5,13 @@ Harness 编排模块（真 Harness 架构核心）
 1. HarnessPhaseState — 扩展 LangGraph 状态（phase / plan / review_result）
 2. load_harness_config — 加载声明式 DSL 配置（harness_config.yaml）
 3. build_rubric / detect_task_type — 按任务类型生成评审标准
-4. HarnessPhaseMiddleware — 阶段状态机 + rubric 注入
+4. HarnessPhaseMiddleware — 管理阶段流转并注入评审标准（rubric）
 
 设计说明：
-- 阶段（phase）不再是 chat.py 里的正则猜测，而是 graph state 中的结构化字段，
-  由中间件在钩子中写入，可被 checkpoint 持久化、可被 values 流读取。
-- 评审（review）交给框架原生 RubricMiddleware：注入 rubric 后，
-  其 grader 子Agent 会结构化产出 satisfied / needs_revision / failed 判定，
-  needs_revision 时自动打回模型重做，形成真正的 Review 回路。
+- 阶段（phase）是 LangGraph 运行图状态中的结构化字段。中间件在钩子中写入阶段，
+  检查点（checkpoint）负责持久化，状态流（values）可以读取它。
+- 框架内置的 RubricMiddleware 收到评审标准后，调用评审子 Agent 产出结构化判定，
+  包括通过（satisfied）、需修改（needs_revision）和失败（failed）。需修改时，模型会自动重做。
 """
 from __future__ import annotations
 
@@ -36,8 +35,8 @@ HARNESS_CONFIG_PATH = Path(__file__).parent / "harness_config.yaml"
 class HarnessPhaseState(AgentState):
     """Harness 扩展状态：在 DeepAgentState 基础上增加阶段/计划/评审字段。
 
-    通过 HarnessPhaseMiddleware.state_schema 声明，由框架自动合并进 graph state，
-    因此这些字段会出现在 checkpoint 和 values 流中（可观测、可恢复）。
+    通过 HarnessPhaseMiddleware.state_schema 声明。框架会将这些字段合并到运行图状态，
+    因此可以在状态流（values）中查看，也可以从检查点（checkpoint）恢复。
     """
 
     phase: NotRequired[str]
@@ -69,10 +68,10 @@ _DEFAULT_CONFIG: dict[str, Any] = {
 def load_harness_config(config_path: Path | None = None) -> dict[str, Any]:
     """加载 Harness DSL 配置。
 
-    Args:
+    参数：
         config_path: 配置文件路径，默认使用模块目录下的 harness_config.yaml。
 
-    Returns:
+    返回值：
         配置字典。文件缺失或解析失败时回退到 _DEFAULT_CONFIG（保证降级可用）。
     """
     path = config_path or HARNESS_CONFIG_PATH
@@ -120,7 +119,7 @@ def detect_task_type(messages: list[Any], config: dict[str, Any]) -> str:
 
 
 # 这些词意味着请求通常需要工具调用、业务数据核验或多步执行，适合进入
-# grader。它们是确定性的本地规则，不会为了判断“是否审查”再额外调用一次模型。
+# 评审流程。它们是确定性的本地规则，不会为了判断“是否审查”再额外调用一次模型。
 _DEFAULT_REVIEW_TRIGGER_KEYWORDS = (
     "查询", "搜索", "获取", "列出", "统计", "分析", "对比", "比较", "评估",
     "报表", "报告", "图表", "下单", "采购", "订单", "审批", "创建", "修改", "删除",
@@ -152,7 +151,7 @@ def latest_human_text(messages: list[Any] | None) -> str:
             continue
         content = getattr(msg, "content", "") or ""
         if isinstance(content, list):
-            # 多模态消息只取文本块；图片本身不应让简单请求触发 grader。
+            # 多模态消息只取文本块，避免图片本身触发评审。
             content = " ".join(
                 str(block.get("text", ""))
                 for block in content
@@ -163,7 +162,7 @@ def latest_human_text(messages: list[Any] | None) -> str:
 
 
 def should_use_grader(messages: list[Any] | None, config: dict[str, Any]) -> bool:
-    """判断本次请求是否需要调用 grader。
+    """判断本次请求是否需要调用评审器。
 
     ``review.mode`` 支持三种模式：
 
@@ -171,7 +170,7 @@ def should_use_grader(messages: list[Any] | None, config: dict[str, Any]) -> boo
     * ``always``：兼容旧行为，每次有用户输入都审查；
     * ``never``：临时关闭审查。
 
-    自动模式只做本地字符串判断，避免为了省 grader 调用而新增一次 LLM 调用。
+    自动模式通过本地文本规则判断是否需要调用评审器。
     """
     review_config = config.get("review", {}) if isinstance(config, dict) else {}
     review_config = review_config if isinstance(review_config, dict) else {}
@@ -189,7 +188,7 @@ def should_use_grader(messages: list[Any] | None, config: dict[str, Any]) -> boo
         if pattern.fullmatch(text):
             return False
 
-    # 纯概念解释不需要访问 ERP 数据，也不必为它额外启动 grader；带有
+    # 纯概念解释不需要访问 ERP 数据，也通常无需评审。带有
     # “查询/分析/生成”等动作的长请求仍会在下面的触发规则中进入审查。
     if re.fullmatch(r"(?:什么是[\w]{1,12}|[\w]{1,12}是什么)[？?。\s]*", text):
         return False
@@ -217,8 +216,7 @@ def should_use_grader(messages: list[Any] | None, config: dict[str, Any]) -> boo
 def build_rubric(task_type: str, config: dict[str, Any]) -> str:
     """按任务类型生成评审标准（rubric）字符串。
 
-    RubricMiddleware 收到该字符串后，会由 grader 子Agent 逐条对照
-    执行记录（transcript）打分，驱动"是否重做"的判定。
+    RubricMiddleware 收到评审标准后，由评审子 Agent 逐条对照执行记录打分，判断是否需要重做。
     """
     rubrics = config.get("rubrics", {})
     rubric = rubrics.get(task_type) or rubrics.get("default", "")
@@ -231,7 +229,7 @@ def _build_plan_from_todos(todos: list | None) -> dict | None:
     todos 格式（框架产出）: [{content: str, status: "pending"|"in_progress"|"completed"}]
     Plan 格式（Harness 结构化）: {steps: [{id, content, status, result}], created_at, current_step}
 
-    Returns:
+    返回值：
         Plan.model_dump() 或 None（todos 为空时）
     """
     if not todos:
@@ -276,11 +274,10 @@ class HarnessPhaseMiddleware(AgentMiddleware):
         return "HarnessPhaseMiddleware"
 
     def before_agent(self, state: Any, runtime: Runtime) -> dict[str, Any] | None:
-        """执行前：按需注入 rubric + 置初始阶段为 planning。
+        """执行前按需注入评审标准（rubric），将初始阶段设为规划（planning）。
 
-        ``RubricMiddleware`` 本身是 state-driven 的：只有 state 中存在 rubric
-        才会调用 grader。这里不再无条件注入 default rubric，因此“你好”等
-        简单请求不会产生额外的审查模型调用。
+        ``RubricMiddleware`` 在状态中有评审标准时才会调用评审器。
+        “你好”等简单请求会跳过默认评审标准的注入，因此不会调用评审模型。
         """
         return {"phase": Phase.planning.value, **self._review_policy.start(state)}
 

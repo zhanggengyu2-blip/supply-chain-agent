@@ -1,4 +1,4 @@
-"""Compare skill prompt characters against the pre-change Git baseline (not tokens)."""
+"""对照修改前的 Git 基线，比较技能提示词的字符数，而非 Token 数。"""
 import ast
 import json
 import logging

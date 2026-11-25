@@ -158,11 +158,11 @@ def parse_supplement_text(text: str, current_data: dict) -> dict:
 def request_order_info(extracted_data: str, missing_fields: str) -> str:
     """当订单必填字段缺失时，向用户请求补充信息。此工具会暂停执行等待用户输入。
 
-    Args:
+    参数：
         extracted_data: 当前已提取的订单数据JSON字符串
         missing_fields: 缺失字段列表JSON字符串，例如 ["partId", "quantity"]
 
-    Returns:
+    返回值：
         完整的订单数据JSON（所有必填字段已填充）
     """
     try:

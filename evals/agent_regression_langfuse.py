@@ -1,4 +1,4 @@
-"""Publish deterministic component regressions separately from live Agent tests."""
+"""单独发布确定性的组件回归结果，与真实 Agent 测试分开。"""
 import json
 import unittest
 from pathlib import Path

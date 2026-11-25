@@ -1,4 +1,4 @@
-"""Exercise the actual SSE adapter without Docker, MongoDB or model calls."""
+"""测试真实 SSE 适配器，不使用 Docker、MongoDB 或模型调用。"""
 import asyncio
 import json
 import unittest

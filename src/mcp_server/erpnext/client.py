@@ -1,4 +1,4 @@
-"""Token-authenticated GET-only transport. No arbitrary paths or write methods."""
+"""使用令牌认证、仅允许 GET 的传输层，不允许任意路径或写方法。"""
 import json
 from urllib.parse import quote, urlsplit
 import httpx
@@ -53,7 +53,7 @@ class ERPNextClient:
         except httpx.RequestError:
             raise ERPNextError("connection_failed") from None
         if response.status_code != 200:
-            # Never forward Frappe stack traces, cookies, headers or raw error bodies.
+            # 不转发 Frappe 调用栈、Cookie、请求/响应头或原始错误响应体。
             code = {401: "authentication_failed", 403: "permission_denied", 404: "not_found", 429: "rate_limited"}.get(response.status_code, "http_error")
             raise ERPNextError(code, response.status_code)
         try:

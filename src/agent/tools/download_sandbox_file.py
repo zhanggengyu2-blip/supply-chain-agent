@@ -57,11 +57,11 @@ def download_sandbox_file(remote_path: str, filename: str = "") -> str:
     - 保存到宿主机 download 目录
     - 返回 HTTP 下载链接
 
-    Args:
+    参数：
         remote_path: 沙箱内的文件路径（如 /workspace/report.md, /tmp/chart.png）
         filename: 下载后的文件名（默认使用原文件名）
 
-    Returns:
+    返回值：
         下载链接和本地路径，或错误信息
     """
     DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -159,10 +159,10 @@ def download_sandbox_file(remote_path: str, filename: str = "") -> str:
 def list_sandbox_files(path: str = "/workspace") -> str:
     """列出沙箱内指定目录的文件。
 
-    Args:
+    参数：
         path: 沙箱内的目录路径（默认 /workspace）
 
-    Returns:
+    返回值：
         文件列表
     """
     container, docker_client = _get_docker_container()

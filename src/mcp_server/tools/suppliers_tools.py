@@ -1,6 +1,6 @@
 """
 供应商管理 MCP 工具
-supplier_query / supplier_page / supplier_get
+涵盖供应商搜索（supplier_query）、分页（supplier_page）和详情（supplier_get）。
 """
 import json
 from fastmcp import FastMCP
@@ -14,10 +14,10 @@ def register_supplier_tools(mcp: FastMCP):
     async def supplier_query(name: str) -> str:
         """根据名称关键字搜索供应商。
 
-        Args:
+        参数：
             name: 供应商名称关键字，例如"博世"、"电装"
 
-        Returns:
+        返回值：
             匹配的供应商列表JSON
         """
         result = await erp_client.get("/api/suppliers/search", params={"name": name})
@@ -33,14 +33,14 @@ def register_supplier_tools(mcp: FastMCP):
     ) -> str:
         """分页查询供应商列表。
 
-        Args:
+        参数：
             current: 当前页码，默认1
             size: 每页大小，默认10
             name: 供应商名称（可选，模糊匹配）
             status: 合作状态（可选）：1=合作中, 0=已停止
             credit_rating: 信用评级（可选）：A/B/C/D
 
-        Returns:
+        返回值：
             分页供应商数据JSON，包含 records, total, current, size, pages
         """
         params = {
@@ -57,10 +57,10 @@ def register_supplier_tools(mcp: FastMCP):
     async def supplier_get(id: int) -> str:
         """获取单个供应商的详细信息。
 
-        Args:
+        参数：
             id: 供应商ID
 
-        Returns:
+        返回值：
             供应商详细信息JSON，包含 supplierCode, name, contactPerson, phone, email, address, creditRating, status
         """
         result = await erp_client.get(f"/api/suppliers/get/{id}")
@@ -79,7 +79,7 @@ def register_supplier_tools(mcp: FastMCP):
     ) -> str:
         """创建新供应商。
 
-        Args:
+        参数：
             supplier_code: 供应商编码（必填）
             name: 供应商名称（必填）
             contact_person: 联系人
@@ -89,7 +89,7 @@ def register_supplier_tools(mcp: FastMCP):
             credit_rating: 信用评级 A/B/C/D
             status: 合作状态 1=合作中 0=停止
 
-        Returns:
+        返回值：
             创建结果JSON
         """
         data = {
@@ -111,11 +111,11 @@ def register_supplier_tools(mcp: FastMCP):
     async def supplier_update_status(id: int, status: int) -> str:
         """更新供应商合作状态。
 
-        Args:
+        参数：
             id: 供应商ID
             status: 新状态 1=合作中 0=已停止
 
-        Returns:
+        返回值：
             操作结果JSON
         """
         result = await erp_client.patch(

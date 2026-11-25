@@ -1,13 +1,13 @@
-"""Frozen synthetic v1: 50 scenario families x 4 utterances, NOT human gold labels.
+"""冻结的合成 v1 数据集：50 个场景族，每族 4 种表述；不是人工金标准标签。
 
-No real customer records. Split by family before model calls; same context/label
-within each family. Never tune using the test split or claim 200 independent cases.
+不含真实客户记录。调用模型前按场景族划分数据；同一族内使用相同上下文和标签。
+不得使用测试集调参，也不得声称这是 200 个独立用例。
 """
 import hashlib
 import json
 from pathlib import Path
 
-# (scenario, context, four latest user utterances). Definitions in LABELING.md.
+# 每项包含场景、上下文和四种最新用户表述，定义见 LABELING.md。
 SKIP = [
  ("greeting", "", "你好|您好|嗨|hello"),
  ("thanks", "当前没有待办任务。", "谢谢|感谢|辛苦啦|多谢你的帮助"),

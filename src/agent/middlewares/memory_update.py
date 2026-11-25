@@ -57,8 +57,8 @@ class MemoryUpdateMiddleware(AgentMiddleware):
             if not messages:
                 return None
 
-            # Only consume the latest user turn, not stale preferences from
-            # earlier turns (or another conversation resumed from a checkpoint).
+            # 只处理最新一轮用户消息，不读取此前轮次的旧偏好，
+            # 也不读取从检查点恢复的其他会话中的偏好。
             start = next((i for i in range(len(messages) - 1, -1, -1)
                           if getattr(messages[i], "type", "") == "human"), len(messages))
             current_messages = messages[start:]

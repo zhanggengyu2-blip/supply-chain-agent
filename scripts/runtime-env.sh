@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Use normal user-installed tools first; fall back to the desktop bundled runtime.
+# 优先使用用户正常安装的工具，找不到时再使用桌面应用内置的运行环境。
 agent_runtime="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies"
 if ! command -v node >/dev/null 2>&1 && [[ -x "$agent_runtime/node/bin/node" ]]; then
   export PATH="$agent_runtime/node/bin:$PATH"

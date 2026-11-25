@@ -219,7 +219,7 @@ def generate_chart(
     图表在 Docker 沙箱中安全生成，不会写入宿主机文件系统。
     如需下载到本地，请调用 download_sandbox_file 工具。
 
-    Args:
+    参数：
         chart_type: 图表类型。支持: bar(柱状图), horizontal_bar(横向柱状图),
             stacked_bar(堆叠柱状图), grouped_bar(分组柱状图),
             line(折线图), multi_line(多折线), area(面积图), stacked_area(堆叠面积图),
@@ -236,7 +236,7 @@ def generate_chart(
         y_field: Y轴/数值字段名（默认"value"）
         series_field: 系列/分组字段名（分组图/多线图时使用，如"supplier"）
 
-    Returns:
+    返回值：
         图表沙箱路径，或错误信息
     """
     if chart_type not in CHART_TYPES:

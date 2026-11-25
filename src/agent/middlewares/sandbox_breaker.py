@@ -37,7 +37,7 @@ class SandboxCircuitBreakerMiddleware(AgentMiddleware):
         self._failure_threshold = failure_threshold
         self._recovery_timeout = recovery_timeout
         self._failure_count: int = 0
-        self._state: str = "CLOSED"  # CLOSED / OPEN / HALF_OPEN
+        self._state: str = "CLOSED"  # CLOSED（正常）/ OPEN（熔断）/ HALF_OPEN（探测）
         self._last_failure_time: float = 0
         self.tools = []
 

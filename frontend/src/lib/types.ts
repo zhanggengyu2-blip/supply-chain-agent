@@ -48,7 +48,7 @@ export interface SSETodoUpdateEvent {
   phase?: string;
   todos?: { id: string; content: string; status: string }[];
   status_change?: string;
-  // legacy fields
+  // 旧版字段
   tool?: string;
   args?: string;
   result?: string;
@@ -78,11 +78,11 @@ export type SSEEvent =
 // ===== 中断数据 =====
 export interface InterruptData {
   interrupt_type: string;
-  // order_info_supplement
+  // order_info_supplement：订单信息补充
   extracted_data?: Record<string, unknown>;
   missing_fields?: string[];
   message?: string;
-  // hitl_approval
+  // hitl_approval：人工审批
   order_data?: Record<string, unknown> | Record<string, unknown>[];
   tool_name?: string;
   tool_args?: Record<string, unknown> | Record<string, unknown>[];

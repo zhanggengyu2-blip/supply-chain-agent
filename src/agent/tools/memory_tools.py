@@ -23,11 +23,11 @@ def read_memory(query: str, limit: int = 5) -> str:
     - 用户问起过去做过的分析、下过的订单、得出的结论
     - 需要沿用用户此前表达过的偏好或约定
 
-    Args:
+    参数：
         query: 检索意图，用自然语言描述要找什么
         limit: 返回条数，默认 5
 
-    Returns:
+    返回值：
         命中的历史记忆列表（含类型、日期、相关度），没有命中会明确说明。
     """
     store = get_current_store()
@@ -48,13 +48,13 @@ def remember(content: str, key: str = "", memory_type: str = "semantic") -> str:
 
     当用户说"记住…""以后都…""默认…"时调用本工具，而不是只在当前回答里应付。
 
-    Args:
+    参数：
         content: 要记住的内容，一句话说清楚
         key: 冲突键。同一 key 再次写入会替换旧值（旧值保留为历史），
              例如图表偏好用 preferred_chart_type；留空则按内容自动生成
         memory_type: semantic（事实/偏好，默认）或 procedural（做事的方法/经验）
 
-    Returns:
+    返回值：
         写入结果说明。
     """
     store = get_current_store()

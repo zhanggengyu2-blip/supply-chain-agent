@@ -1,4 +1,4 @@
-"""Prompt-boundary and real graph tests; no external API / Docker required."""
+"""提示词边界与真实图执行测试，无需外部 API 或 Docker。"""
 import asyncio
 import base64
 import json

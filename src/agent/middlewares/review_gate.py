@@ -1,4 +1,4 @@
-"""Execution evidence can upgrade routing; writes must not be replayed by grading."""
+"""执行证据可提升审查要求；评审不得导致写入操作被重复执行。"""
 import json
 from deepagents import RubricMiddleware
 from langchain.agents.middleware import AgentMiddleware, hook_config
@@ -19,8 +19,8 @@ def execution_signals(state):
                 writes = True
                 signals.add("write_or_execution_attempt")
             if name == "task":
-                # Child tool traces may not be present in the parent's state.
-                # Conservatively suppress automatic replay for delegated work.
+                # 父 Agent 的状态中可能没有子 Agent 的工具追踪。
+                # 因此对委派任务采取保守策略，禁止自动重放。
                 writes = True
                 signals.add("delegated_task")
         if getattr(m, "type", "") == "tool":
@@ -42,7 +42,7 @@ def execution_signals(state):
 
 
 class ReviewExecutionGate(AgentMiddleware):
-    """Register AFTER RubricMiddleware so reverse after_agent order runs us first."""
+    """注册在 RubricMiddleware 之后，利用 after_agent 的逆序执行先运行本中间件。"""
     state_schema = HarnessPhaseState
 
     def __init__(self, config):
@@ -63,7 +63,7 @@ class ReviewExecutionGate(AgentMiddleware):
 
 
 class SafeRubricMiddleware(RubricMiddleware):
-    """A separate single-pass reviewer prevents write retries without shared mutation."""
+    """独立的单次评审器可避免重试写入，且不修改共享状态。"""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._write_reviewer = RubricMiddleware(**{**kwargs, "max_iterations": 1})

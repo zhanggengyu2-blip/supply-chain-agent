@@ -1,4 +1,4 @@
-"""Model capability metadata must agree with the real endpoint's verified mode."""
+"""模型能力元数据必须与真实接口已验证的模式一致。"""
 from types import SimpleNamespace
 from unittest.mock import patch
 import pytest

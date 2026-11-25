@@ -1,4 +1,4 @@
-"""Real, bounded, resumable paired routing evaluation. No ERP tool calls."""
+"""真实、次数受限且可续跑的配对路由评测，不调用 ERP 工具。"""
 from __future__ import annotations
 
 import argparse
@@ -25,7 +25,7 @@ HERE = Path(__file__).parent
 
 
 class MeasuredModel:
-    """Per-request capture; no global mutable metadata across concurrent users."""
+    """按请求采集信息，不在并发用户之间共享全局可变元数据。"""
     def __init__(self, provider, options):
         self.provider = provider
         self.meta = {"attempted": False, "valid_response": False}
@@ -59,7 +59,7 @@ class MeasuredModel:
             return route
         except BaseException as exc:
             self.meta["error"] = type(exc).__name__
-            # Never write exception strings: HTTP exceptions can carry request details.
+            # 不写入异常文本：HTTP 异常可能携带请求详情。
             response = getattr(exc, "response", None)
             if response is not None:
                 self.meta["http_status"] = response.status_code

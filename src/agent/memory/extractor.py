@@ -122,8 +122,8 @@ def _pick(text: str, table: Dict[str, str], *, require_trigger: bool) -> Optiona
     if not explicit and not _has_imperative(text):
         return None
     selected = None
-    # Prefer the last affirmative clause; do not turn a rejection into a
-    # positive preference. Ambiguous / temporary instructions are not stored.
+    # 优先采用最后一个肯定分句，不把否定表达误转成肯定偏好。
+    # 含义不明确或仅临时生效的指令不入库。
     for clause in re.split(r"[，。；！？,;!?]|改成|改为|换成", text):
         if re.search(r"不要|别用|不用|不想|不喜欢|不再|不能|无需|这次|本次|临时|仅此|don't|do not", clause):
             continue

@@ -1,4 +1,4 @@
-"""Phase one ERPNext read-only MCP gateway (loopback only)."""
+"""阶段一 ERPNext 只读 MCP 网关，仅监听本机回环地址。"""
 from fastmcp import FastMCP
 from src.mcp_server.server_config import MCP_HOST, MCP_PORT
 from src.mcp_server.tools.erpnext_tools import register_erpnext_tools

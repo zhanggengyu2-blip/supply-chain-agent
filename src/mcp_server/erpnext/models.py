@@ -1,4 +1,4 @@
-"""ERPNext v16 field names; shared masters have no company field."""
+"""使用 ERPNext v16 字段名；共享主数据没有 company 字段。"""
 from decimal import Decimal
 from typing import Generic, TypeVar, Literal
 from pydantic import BaseModel, ConfigDict, Field, SecretStr

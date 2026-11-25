@@ -1,9 +1,9 @@
-"""One-off LOCAL ERPNext reader provisioning; never registered as an Agent tool.
+"""一次性的本地 ERPNext 只读账户配置，绝不注册为 Agent 工具。
 
-Uses the existing deployment's documented administrator login, not an admin API
-key. Only Role/User/User Permission and the official permission-manager methods
-can be written. Existing business data and ERPNext files are never modified.
-Default is a read-only plan; --apply is required for account configuration.
+使用现有部署文档中记录的管理员登录信息，不使用管理员 API 密钥。
+只允许写入 Role、User、User Permission，以及调用官方权限管理器的写方法。
+不修改现有业务数据或 ERPNext 文件。
+默认仅生成只读配置计划；必须提供 --apply 才会实际配置账户。
 """
 import argparse
 import asyncio
@@ -68,7 +68,7 @@ class AdminSession:
         self.decode(await self.http.post('/api/method/login',json={'usr':usr.group(1),'pwd':pwd.group(1)}))
         who=await self.get('/api/method/frappe.auth.get_logged_user')
         if who.get('message')!='Administrator': raise ConfigurationError('expected_admin_session')
-        # Obtain the normal authenticated CSRF token; never disable CSRF checks.
+        # 获取正常认证流程中的 CSRF 令牌，不关闭跨站请求伪造检查。
         page=await self.http.get('/desk')
         match=re.search(r'frappe\.csrf_token\s*=\s*[\"\x27]([^\"\x27]+)',page.text)
         if not match: match=re.search(r'[\"\x27]csrf_token[\"\x27]\s*:\s*[\"\x27]([^\"\x27]+)',page.text)
@@ -124,9 +124,9 @@ async def main(apply):
             if not roles:
                 await admin.write('/api/resource/Role',{'role_name':ROLE,'desk_access':0})
             elif roles[0].get('desk_access'):
-                # Desk User implicitly grants Item.share in this deployment.
-                # Remove desk access only from our dedicated role; never edit the
-                # existing Desk User role or permissions of other users.
+                # 在此部署中，Desk User 会隐式授予 Item.share 权限。
+                # 仅移除本项目专用角色的桌面访问权限；不得修改
+                # 已有的 Desk User 角色或其他用户的权限。
                 await admin.write('/api/resource/Role/'+quote(ROLE,safe=''),{'desk_access':0},method='PUT')
             for dt in DOCTYPES:
                 current=await admin.permissions(dt)
@@ -149,7 +149,7 @@ async def main(apply):
                     'send_welcome_email':0,'user_type':'Website User','bio':MARKER,'roles':[{'role':ROLE}]})
                 user_exists=True
             user_path='/api/resource/User/'+quote(USER,safe='')
-            # Keep the account disabled while converting it to API-only identity.
+            # 将账户转换为仅供 API 使用的身份期间，保持账户禁用。
             await admin.write(user_path,{'enabled':0,'user_type':'Website User','send_welcome_email':0},method='PUT')
             user=(await admin.get(user_path))['data']
             if user.get('user_type')!='Website User': raise ConfigurationError('api_only_user_type_required')
@@ -170,7 +170,7 @@ async def main(apply):
             write_env({'ERPNEXT_API_USER':USER,'ERPNEXT_API_KEY':key,'ERPNEXT_API_SECRET':secret,
                 'ERPNEXT_COMPANY':company,'ERPNEXT_WAREHOUSES':','.join(warehouses),'ERPNEXT_BASE_URL':BASE})
             await admin.write(user_path,{'enabled':1,'send_welcome_email':0},method='PUT')
-            # Use ONLY the new reader token for identity and effective permission checks.
+            # 身份核对和实际权限检查只能使用新建只读用户的令牌。
             from src.mcp_server.erpnext.models import ERPNextSettings
             from src.mcp_server.erpnext.client import ERPNextClient
             from evals.phase1_acceptance import audit_permissions
@@ -185,7 +185,7 @@ async def main(apply):
                 effective_write_permissions_denied=len(audit['checks']),reader_user_type=user['user_type'],
                 desk_user_inheritance_removed=True,admin_write_requests=admin.write_log)
     except Exception as exc:
-        # Never print raw errors, request/response bodies, login details or tokens.
+        # 不打印原始错误、请求/响应体、登录信息或令牌。
         report.update(status='failed',error_type=type(exc).__name__)
         if isinstance(exc,ConfigurationError): report.update(error_code=exc.code,http_status=exc.status,erp_error_type=exc.erp_type)
         if apply and user_exists:

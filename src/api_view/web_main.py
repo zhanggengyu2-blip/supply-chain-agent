@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
     stop_event = asyncio.Event()
     maintenance_task = None
     try:
-        # Phase one disables arbitrary execution; no sandbox containers are created.
+        # 阶段一禁用任意命令执行，不创建沙箱容器。
         yield
     finally:
         web_logger.info("Shutting down ERP Agent Web Server...")

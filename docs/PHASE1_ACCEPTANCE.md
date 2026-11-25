@@ -129,3 +129,12 @@ cd '/Users/zhanggengyu/Documents/供应链协同Agent'
 - Review 保留上游部分 Java ERP 写入检查模板，本阶段只读任务将其判为不适用；未来受控 ERPNext 写入前必须替换为真实 items / qty / rate / warehouse 契约并重新评测。
 - 后续采购闭环需先定义受控草稿契约与业务规则、最小写权限、不可篡改审批记录、幂等和失败恢复；草稿、提交、取消分别授权和测试。不得直接恢复旧 Java ERP 写工具。
 - 命令/脚本执行工具仍关闭；若将来需要，先独立验收执行隔离、网络和凭据边界，不能恢复 LocalShell 自动降级。
+
+
+## 后续维护：MongoDB 配置统一（2026-10-30）
+
+Web 会话、LangGraph 检查点、长期 Store 和旧沙箱映射共用 `src/agent/config.py` 中的 MongoDB 设置，均从现有 `.env` 读取。存储连接与 Agent 的装配关系保持为 AgentLoader 初始化后传入 create_main_agent；没有改变数据库内容或启用执行沙箱。
+
+本次后端回归 **164 passed、2 skipped、17 subtests passed**；包括 7 项新增配置一致性测试。真实独立 Agent MongoDB 持久化测试 **1 passed**，仅使用并清理随机临时测试库。本次不重跑真实模型、ERPNext 或前端验收，前文结果属于原收尾轮次。
+
+证据：[后端回归](evidence/mongo-config-regression.txt)、[真实 MongoDB 测试](evidence/mongo-config-live.txt)。

@@ -91,7 +91,7 @@ def get_all_subagent_middlewares(user_context: ProcurementContext | None = None)
     """
     获取所有子Agent的中间件配置（供 main_agent 统一加载）
 
-    Returns:
+    返回值：
         {subagent_name: [middleware_list]}
     """
     return {

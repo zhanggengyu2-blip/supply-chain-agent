@@ -1,6 +1,6 @@
-"""Attach Chinese synthetic case descriptions to existing backend traces.
+"""为已有后端追踪补充中文合成用例说明。
 
-This is post-run annotation, not another model invocation or ERP write.
+这是运行后的标注，不会再次调用模型或写入 ERP。
 """
 import json
 from pathlib import Path
@@ -21,7 +21,7 @@ def main():
     def annotate(job):
         batch,row=job;result={'batch':batch,'name':row['name'],'backend_trace_urls':[]}
         try:
-            # Repair missing summary export only; preserve original case trace ID.
+            # 仅修复缺失的摘要导出，保留原始用例的追踪 ID。
             visible=c.api.observations.get_many(trace_id=row['trace_id'],limit=1,fields='basic').data
             if not visible:
                 s=c.start_observation(name='补传验收报告：'+row['name'],as_type='span',

@@ -17,6 +17,7 @@ from datetime import datetime
 from pymongo import MongoClient
 from langgraph.store.base import BaseStore, Item, Op
 
+from ..agent import config as agent_config
 from ..agent.log_utils import web_logger
 
 
@@ -71,7 +72,7 @@ class MongoDBStore(BaseStore):
         "_id": "namespace_tuple::key",
         "namespace": ["tuple", "of", "strings"],
         "key": "item_key",
-        "value": { ... },  # 任意 JSON-serializable 值
+        "value": { ... },  # 任意可序列化为 JSON 的值
         "created_at": "2024-01-01T00:00:00",
         "updated_at": "2024-01-01T00:00:00",
     }
@@ -79,11 +80,14 @@ class MongoDBStore(BaseStore):
 
     def __init__(
         self,
-        uri: str = "mongodb://localhost:27017",
-        db_name: str = "erp_agent",
+        uri: str | None = None,
+        db_name: str | None = None,
         collection_name: str = "langgraph_store",
     ):
         super().__init__()
+        # 显式参数覆盖用于隔离测试；未覆盖时使用共享配置。
+        uri = agent_config.MONGODB_URI if uri is None else uri
+        db_name = agent_config.MONGODB_DB_NAME if db_name is None else db_name
         self._client = MongoClient(uri, serverSelectionTimeoutMS=5000)
         self._db = self._client[db_name]
         self._collection = self._db[collection_name]
@@ -102,7 +106,7 @@ class MongoDBStore(BaseStore):
         return f"{ns_str}::{key}"
 
     # ============================================================
-    # 核心 CRUD 接口
+    # 核心增删改查（CRUD）接口
     # ============================================================
 
     def get(self, namespace: tuple[str, ...], key: str) -> Optional[Item]:
@@ -119,7 +123,7 @@ class MongoDBStore(BaseStore):
         now = datetime.now().isoformat()
         serialized = self._serialize_value(value)
 
-        # Upsert（保留 created_at）
+        # 存在则更新、不存在则插入（保留 created_at）
         self._collection.update_one(
             {"_id": doc_id},
             {

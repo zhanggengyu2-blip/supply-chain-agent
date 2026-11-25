@@ -1,4 +1,4 @@
-"""Company/warehouse scope is server-owned, never accepted from the model."""
+"""公司与仓库范围由服务端控制，不接受模型指定。"""
 from pydantic import ValidationError
 from .client import ERPNextClient, ERPNextError
 from .models import Query, BinQuery, PurchaseOrderQuery, Supplier, Item, Warehouse, Bin, PurchaseOrder, ReadResult
@@ -27,7 +27,7 @@ class ERPNextAdapter:
             if query.warehouse and query.warehouse not in s.warehouses:
                 raise ERPNextError("warehouse_denied")
             requested = [query.warehouse] if query.warehouse else s.warehouses
-            # ERPNext 16.34.1 Bin has company; also verify warehouse ownership.
+            # ERPNext 16.34.1 的 Bin 有 company 字段，同时仍需核对仓库所属公司。
             warehouses = await self.client.list_documents("Warehouse", fields=["name", "company"],
                 filters=[["company", "=", s.company], ["name", "in", requested]], limit=len(requested))
             if {w.get("name") for w in warehouses if w.get("company") == s.company} != set(requested):

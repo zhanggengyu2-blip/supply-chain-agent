@@ -48,7 +48,7 @@ docker compose up -d mongo
 | ERPNEXT_API_USER | 实际 API 用户名，用 get_logged_user 进行一致性校验 |
 | ERPNEXT_COMPANY | 公司完整名称，与 ERPNext 中一致 |
 | ERPNEXT_WAREHOUSES | 允许的仓库完整 name，逗号分隔 |
-| MONGODB_URI / MONGODB_DB_NAME | 当前已设为本工程独立 MongoDB |
+| MONGODB_URI / MONGODB_DB_NAME | 本工程独立 MongoDB；由 src/agent/config.py 统一读取，供聊天记录、检查点与长期 Store 共用 |
 | MCP_SERVER_URL | 默认 http://127.0.0.1:9000 |
 | ERP_LANGFUSE_ENABLED | 默认 false，凭据齐备后改为 true |
 | LANGFUSE_BASE_URL / PUBLIC_KEY / SECRET_KEY | 分别填写 LANGFUSE_BASE_URL、LANGFUSE_PUBLIC_KEY、LANGFUSE_SECRET_KEY |

@@ -1,4 +1,4 @@
-"""Reader provisioning writes only account configuration, never ERP business docs."""
+"""只读账户配置仅写入账户设置，不写入 ERP 业务单据。"""
 from unittest.mock import AsyncMock
 import pytest
 from scripts.configure_erpnext_reader import AdminSession,ConfigurationError,ROLE,semantic_permissions

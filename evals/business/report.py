@@ -1,4 +1,4 @@
-"""Create a transparent, local interview evidence report from one frozen run."""
+"""根据一次冻结的运行结果，生成透明可核查的本地面试证据报告。"""
 import json
 import statistics
 from pathlib import Path

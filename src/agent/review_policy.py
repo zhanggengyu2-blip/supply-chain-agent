@@ -1,4 +1,4 @@
-"""Bounded hybrid review routing. No tool execution or mutable per-user cache."""
+"""有范围限制的混合审查路由，不执行工具，也不维护可变的用户级缓存。"""
 from __future__ import annotations
 
 import asyncio
@@ -88,7 +88,7 @@ class ReviewPolicy:
             return ReviewRoute(decision="review", task_type=task, reason="明确评审或高风险业务动作")
         if not pending and re.fullmatch(r"(?:你好|您好|嗨|hello|hi|谢谢|感谢|再见|你是谁)[！!。？?\s]*", text, re.I):
             return ReviewRoute(decision="skip", reason="独立问候或感谢")
-        # Narrow exact concept grammar, not 'anything starting with 请解释'.
+        # 仅匹配范围明确的概念问句语法，不把所有以“请解释”开头的请求都视为概念解释。
         if not pending and re.fullmatch(r"(?:什么是[\w]{1,12}|[\w]{1,12}是什么)[？?。\s]*", text):
             return ReviewRoute(decision="skip", reason="单一概念定义")
         if re.search(r"查询|搜索|统计|分析|比较|对比|计算|生成|导出", text):

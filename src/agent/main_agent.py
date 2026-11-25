@@ -194,19 +194,19 @@ def create_main_agent(
     创建主 Agent 实例
 
     组装顺序（严格遵循文档）：
-    1. LLM（DeepSeek）
+    1. 大语言模型（DeepSeek）
     2. CompositeBackend 三层路由（default=sandbox, /memories/=Store, /persisted-skills/=Store）
     3. 工具加载（MCP + chart + web_search + hitl）
     4. 子Agent配置（YAML声明式）
     5. 中间件栈（7自定义 + 框架内置）
     6. 创建 Agent
 
-    Args:
+    参数：
         user_context: 用户上下文（含偏好）
         checkpointer: LangGraph checkpointer（会话持久化）
         store: LangGraph store（跨会话存储）
 
-    Returns:
+    返回值：
         CompiledStateGraph - 可执行的 Agent 图
     """
     if user_context is None:
@@ -214,22 +214,21 @@ def create_main_agent(
 
     agent_logger.info(f"Creating main agent for user: {user_context.user_id}")
 
-    # ===== 1. LLM =====
+    # ===== 1. 大语言模型（LLM）=====
     llm = get_llm()
     grader_llm = get_llm(thinking=False)
 
-    # ===== 2. Backend - Manager + Stable Proxy + CompositeBackend =====
-    # Manager 负责用户级领取/恢复/重建；Proxy 保持 Agent 已持有的后端引用稳定。
+    # ===== 2. 后端：管理器、稳定代理与 CompositeBackend 组合后端 =====
+    # 沙箱管理器负责为用户分配、恢复和重建沙箱，代理让 Agent 可以持续使用同一个后端引用。
     sandbox_manager_instance = None
     managed_sandbox = False
-    # Phase one deliberately has no command executor or host filesystem backend.
-    # StateBackend stores virtual files in LangGraph checkpoint state.
+    # 阶段一不提供命令执行器或宿主机文件系统后端。
+    # StateBackend 将虚拟文件保存在 LangGraph 检查点状态中。
     sandbox_backend = StateBackend()
     from .backends.sandbox_holder import set_sandbox
     set_sandbox(None, user_context.user_id)
 
-    # deepagents >= 0.7 要求传入已初始化的 Backend 实例，
-    # 不再接受旧版的 backend factory。
+    # deepagents 0.7 起要求传入已初始化的后端实例。
     backend_routes = {}
     if store is not None:
         backend_routes["/memories/"] = StoreBackend(
@@ -255,7 +254,7 @@ def create_main_agent(
         custom_tools.extend([read_memory, remember])
     all_tools = select_tools(mcp_tools + custom_tools)
 
-    # Prompt disclosure is independent from physical sandbox file synchronization.
+    # 提示词的按需披露与沙箱中的实际文件同步相互独立。
     from .progressive_skills import (
         SkillCatalog, ProgressiveSkillsMiddleware, attach_to_subagents, SLOT,
     )
@@ -273,8 +272,8 @@ def create_main_agent(
     from .subagents.loader import load_subagent_configs, resolve_subagent_tools, get_delegation_context_prompt
     subagent_configs = load_subagent_configs()
     subagents = resolve_subagent_tools(subagent_configs, all_tools)
-    # Override DeepAgents' automatic general-purpose worker so it receives
-    # the same execution-time policy as the named procurement specialists.
+    # 覆盖 DeepAgents 自动创建的 general-purpose 通用子 Agent，
+    # 使其采用与具名采购专家相同的运行时策略。
     subagents.append({"name": "general-purpose", "description": "通用只读辅助任务",
                       "system_prompt": "仅使用阶段一允许的只读工具；不得执行真实 ERP 写入或命令。",
                       "tools": select_tools(all_tools)})
@@ -309,9 +308,9 @@ def create_main_agent(
 
     # 注意：create_deep_agent 内部已自动添加：
     # - SummarizationMiddleware（自动摘要 + compact_conversation 工具）
-    # - FilesystemMiddleware, SkillsMiddleware, SubAgentMiddleware
-    # - PatchToolCallsMiddleware, MemoryMiddleware
-    # TodoListMiddleware is explicitly registered for the pinned DeepAgents version.
+    # - FilesystemMiddleware（文件操作）、SkillsMiddleware（技能）、SubAgentMiddleware（子 Agent）
+    # - PatchToolCallsMiddleware（修补工具调用）、MemoryMiddleware（记忆）
+    # 针对锁定的 DeepAgents 版本，显式注册 TodoListMiddleware（待办列表中间件）。
     # 项目额外注册 Planning、自定义中间件和调用限制
     # 沙箱重建后不仅替换底层 Docker 连接，还要重新填充项目、基础 Skills 和
     # 用户持久化 Skills。两个中间件持有同一个稳定 Proxy，缓存必须一起失效。
@@ -355,8 +354,8 @@ def create_main_agent(
         MemoryConsolidationMiddleware(store=store, user_id=user_context.user_id),   # 7.5 情节归档 + 遗忘（COLD）
         SandboxCircuitBreakerMiddleware(failure_threshold=3, recovery_timeout=60),  # 8. 熔断器
         # --- Harness 评审器（RubricMiddleware）---
-        # 收到 rubric 后，grader 子Agent 结构化产出 satisfied/needs_revision/failed，
-        # needs_revision 时自动打回模型重做，形成真实 Review 回路（非 prompt 软约束）
+        # 评审子 Agent 根据评审标准输出结构化判定。
+        # 判定为需修改（needs_revision）时，框架会让模型重做。
         SafeRubricMiddleware(model=grader_llm, max_iterations=_review_max_iterations),
         ReviewExecutionGate(_harness_config),  # after_agent 逆序：先升级，再审查
         # --- 框架内置中间件（调用限制）---
@@ -393,7 +392,7 @@ def create_main_agent(
         middleware=middlewares,
         subagents=subagents if subagents else None,
         skills=None,
-        memory=None,  # StateBackend cannot read host files; memory is injected below.
+        memory=None,  # StateBackend 无法读取宿主机文件；记忆通过下方配置注入。
         backend=composite_backend,
         interrupt_on=INTERRUPT_ON_TOOLS,
         checkpointer=checkpointer,

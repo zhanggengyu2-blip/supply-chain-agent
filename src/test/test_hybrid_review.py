@@ -1,4 +1,4 @@
-"""Real graph regression suite for routing, escalation, grading and HITL."""
+"""在真实图执行中回归验证路由、审查升级、评审和人工介入。"""
 import asyncio
 import unittest
 from unittest.mock import Mock, AsyncMock
@@ -100,7 +100,7 @@ class HybridReviewTests(unittest.TestCase):
     def test_tool_failure_upgrades_before_actual_grader(self):
         @tool
         def lookup() -> str:
-            """Lookup records."""
+            """查询记录。"""
             return '{"success": false, "error": "offline"}'
         model = ToolModel(responses=[AIMessage(content="", tool_calls=[{"name": "lookup", "args": {}, "id": "a"}]), AIMessage(content="no data")])
         r = reviewer()
@@ -114,7 +114,7 @@ class HybridReviewTests(unittest.TestCase):
         count = []
         @tool
         def order_create() -> str:
-            """Create an order."""
+            """创建订单。"""
             count.append(1)
             return '{"success": true}'
         model = ToolModel(responses=[AIMessage(content="", tool_calls=[{"name": "order_create", "args": {}, "id": "w"}]), AIMessage(content="created")])
@@ -168,7 +168,7 @@ class HybridReviewTests(unittest.TestCase):
         router.with_structured_output.return_value.invoke.return_value = ReviewRoute(decision="skip", reason="看似简单")
         @tool
         def query_record() -> str:
-            """Query record."""
+            """查询记录。"""
             return 'Error: timeout'
         r = reviewer()
         model = ToolModel(responses=[AIMessage(content="", tool_calls=[{"name": "query_record", "args": {}, "id": "err"}]), AIMessage(content="failed")])

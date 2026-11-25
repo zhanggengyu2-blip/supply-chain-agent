@@ -1,6 +1,6 @@
 """
 产品/零部件管理 MCP 工具
-part_query / part_search / part_by_supplier / part_page
+涵盖零件详情（part_query）、搜索（part_search）、按供应商查询（part_by_supplier）和分页（part_page）。
 """
 import json
 from fastmcp import FastMCP
@@ -14,10 +14,10 @@ def register_parts_tools(mcp: FastMCP):
     async def part_query(id: int) -> str:
         """获取单个零部件的详细信息。
 
-        Args:
+        参数：
             id: 零部件ID
 
-        Returns:
+        返回值：
             零部件详细信息JSON，包含 partCode, name, model, specification, unit, purchasePrice, suggestedRetailPrice, stockWarningValue, supplierId, category, description
         """
         result = await erp_client.get(f"/api/parts/get/{id}")
@@ -27,10 +27,10 @@ def register_parts_tools(mcp: FastMCP):
     async def part_search(name: str) -> str:
         """根据名称关键字搜索零部件。
 
-        Args:
+        参数：
             name: 零件名称关键字，例如"火花塞"、"刹车片"、"滤芯"
 
-        Returns:
+        返回值：
             匹配的零部件列表JSON
         """
         result = await erp_client.get("/api/parts/search", params={"name": name})
@@ -40,10 +40,10 @@ def register_parts_tools(mcp: FastMCP):
     async def part_by_supplier(supplier_id: int) -> str:
         """获取指定供应商的所有产品列表。
 
-        Args:
+        参数：
             supplier_id: 供应商ID
 
-        Returns:
+        返回值：
             该供应商提供的零部件列表JSON
         """
         result = await erp_client.get(f"/api/parts/supplier/{supplier_id}")
@@ -59,14 +59,14 @@ def register_parts_tools(mcp: FastMCP):
     ) -> str:
         """分页查询零部件列表。
 
-        Args:
+        参数：
             current: 当前页码，默认1
             size: 每页大小，默认10
             name: 零件名称（可选，模糊匹配）
             category: 分类（可选），例如"发动机系统"、"制动系统"、"电气系统"
             supplier_id: 供应商ID（可选）
 
-        Returns:
+        返回值：
             分页零部件数据JSON，包含 records, total, current, size, pages
         """
         params = {
@@ -95,7 +95,7 @@ def register_parts_tools(mcp: FastMCP):
     ) -> str:
         """创建新零部件。
 
-        Args:
+        参数：
             part_code: 零件编码（必填）
             name: 零件名称（必填）
             purchase_price: 采购单价（必填，>=0）
@@ -108,7 +108,7 @@ def register_parts_tools(mcp: FastMCP):
             category: 分类
             description: 描述
 
-        Returns:
+        返回值：
             创建结果JSON
         """
         data = {

@@ -1,4 +1,4 @@
-"""Verify current live evaluation traces, never print callback payloads."""
+"""验证当前真实评测的追踪，不打印回调携带的数据。"""
 import json
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor

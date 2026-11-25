@@ -1,4 +1,4 @@
-"""Offline adapter tests; intentionally separate from real API evaluation metrics."""
+"""离线适配器测试，与真实 API 评测指标分开统计。"""
 import asyncio
 import copy
 import json

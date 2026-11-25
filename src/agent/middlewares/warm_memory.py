@@ -1,4 +1,4 @@
-"""Refresh bounded user memory on every model call, including cached agents."""
+"""每次调用模型时刷新有长度上限的用户记忆，缓存的 Agent 也会刷新。"""
 import asyncio
 from langchain.agents.middleware import AgentMiddleware
 from langchain_core.messages import SystemMessage
@@ -25,7 +25,7 @@ class WarmMemoryMiddleware(AgentMiddleware):
             except Exception as exc:
                 middleware_logger.warning(f"Warm memory unavailable: {exc}")
         event('memory.inject', characters=len(brief))
-        # Preserve structured system-message blocks added by other middleware.
+        # 保留其他中间件添加的结构化系统消息块。
         message = request.system_message
         blocks = list(message.content_blocks) if message else []
         found = False

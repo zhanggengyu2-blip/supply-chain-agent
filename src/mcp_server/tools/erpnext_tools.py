@@ -1,4 +1,4 @@
-"""Only read tools are registered in phase one; legacy Java tools remain unregistered."""
+"""阶段一只注册读取工具，旧 Java ERP 工具保持未注册。"""
 from ..erpnext.models import ERPNextSettings, Query, BinQuery, PurchaseOrderQuery, Supplier, Item, Warehouse, Bin, PurchaseOrder, ReadResult
 from fastmcp.exceptions import ToolError
 from ..erpnext.client import ERPNextClient, ERPNextError
@@ -9,7 +9,7 @@ async def read(doctype, query):
         async with ERPNextClient(ERPNextSettings.from_env()) as client:
             return await ERPNextAdapter(client).query(doctype, query)
     except ERPNextError as exc:
-        # Only our sanitized code/status is safe to expose through the MCP boundary.
+        # MCP 边界只对外暴露脱敏后的错误代码和状态。
         raise ToolError(str(exc)) from None
 
 def register_erpnext_tools(mcp):

@@ -48,11 +48,11 @@ def web_fetch(url: str, max_chars: int = 8000) -> str:
     - 获取 Skill 文件内容
     - 阅读在线资源
 
-    Args:
+    参数：
         url: 完整的 HTTP/HTTPS 地址
         max_chars: 返回内容最大字符数（默认8000）
 
-    Returns:
+    返回值：
         网页文本内容或错误信息
     """
     if not url.startswith(("http://", "https://")):
@@ -186,7 +186,7 @@ def _validate_skill_in_sandbox(sandbox, skill_name: str, sandbox_skill_dir: str)
 
     验证项目：
     1. SKILL.md 文件存在性
-    2. YAML frontmatter 合法解析
+    2. YAML 文件头元数据可以正确解析
     3. 必需字段 name 的非空校验
     4. 可选字段类型校验 (version, description)
     5. name 字段路径安全性校验
@@ -208,7 +208,7 @@ def _validate_skill_in_sandbox(sandbox, skill_name: str, sandbox_skill_dir: str)
 
     content = read_sk.output
 
-    # 3. 验证 YAML frontmatter 是否存在且格式正确
+    # 3. 验证 YAML 文件头元数据是否存在且格式正确
     frontmatter_pattern = r'^---\s*\n(.*?)\n---\s*\n'
     match = re.search(frontmatter_pattern, content, re.DOTALL)
 
@@ -384,11 +384,11 @@ def install_skill(url: str, skill_name: str = "") -> str:
         *.py              # 脚本（可选）
         requirements.txt  # 依赖（可选）
 
-    Args:
+    参数：
         url: Skill 的下载地址（ZIP 压缩包、GitHub 仓库、或 .md 文件）
         skill_name: 技能名称。为空则从 URL 自动提取。
 
-    Returns:
+    返回值：
         安装结果说明（含安装路径和文件列表）
     """
     # 验证 URL 协议是否合法（只支持 HTTP 和 HTTPS）
@@ -408,7 +408,7 @@ def install_skill(url: str, skill_name: str = "") -> str:
     sandbox = get_sandbox()
 
     try:
-        # Step 1: 下载文件到内存
+        # 第 1 步：下载文件到内存
         response = httpx.get(
             url,
             follow_redirects=True,  # 自动跟随重定向
@@ -428,7 +428,7 @@ def install_skill(url: str, skill_name: str = "") -> str:
         if sandbox is None:
             return "错误: 沙箱不可用，无法安全安装 Skill"
 
-        # Step 2: 在 Python 中解压，获取文件映射
+        # 第 2 步：在 Python 中解压，获取文件映射
         # 在沙箱中创建临时目录用于验证
         sandbox_tmp = f"/tmp/_skill_install_{skill_name}"
 
@@ -459,7 +459,7 @@ def install_skill(url: str, skill_name: str = "") -> str:
             sandbox.execute(f"rm -rf {sandbox_tmp} 2>/dev/null || true")
             return "错误: 未找到 SKILL.md，安装取消"
 
-        # Step 3: 上传文件到沙箱验证
+        # 第 3 步：上传文件到沙箱验证
         sandbox.execute(f"mkdir -p {sandbox_tmp}/skill")
         for rel_path, content in files_dict.items():
             clean_path = rel_path[len(skill_prefix):] if rel_path.startswith(skill_prefix) else rel_path
@@ -467,14 +467,14 @@ def install_skill(url: str, skill_name: str = "") -> str:
                 continue
             sandbox.write_file(f"{sandbox_tmp}/skill/{clean_path}", content)
 
-        # Step 4: 在沙箱中验证文件完整性
+        # 第 4 步：在沙箱中验证文件完整性
         valid, err_msg, sandbox_files = _validate_skill_in_sandbox(sandbox, skill_name, f"{sandbox_tmp}/skill")
         if not valid:
             # 验证失败，清理沙箱临时文件
             sandbox.execute(f"rm -rf {sandbox_tmp}")
             return f"沙箱验证失败: {err_msg}（已清理沙箱临时文件，未影响宿主机）"
 
-        # Step 5: 验证通过 → 从沙箱复制到宿主机 + 沙箱正式目录
+        # 第 5 步：验证通过 → 从沙箱复制到宿主机 + 沙箱正式目录
         sandbox_verify_dir = f"{sandbox_tmp}/skill"
         host_skills_dir = Path(SKILLS_DIR)
         host_skills_dir.mkdir(parents=True, exist_ok=True)

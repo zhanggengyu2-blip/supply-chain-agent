@@ -58,7 +58,7 @@ class SandboxHealthMiddleware(AgentMiddleware):
 
     @measured('sandbox.health')
     def _check_and_recover(self) -> None:
-        # LocalShell fallback 没有 Manager，保持原有开发模式语义。
+        # 开发模式回退到本地命令后端（LocalShell）时，跳过沙箱健康检查。
         if self._sandbox_manager is None or self._sandbox_backend is None:
             self._healthy = True
             return

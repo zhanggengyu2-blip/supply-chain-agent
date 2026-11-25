@@ -1,4 +1,4 @@
-"""Opt-in metadata-only Langfuse tracing. Never forwards callback payloads."""
+"""显式启用的 Langfuse 追踪，仅记录元数据，不转发回调携带的数据。"""
 import asyncio
 import functools
 import hashlib
@@ -84,7 +84,7 @@ def event(name, **numbers):
 
 
 def measured(name):
-    """Instrument internal operations without recording arguments or exceptions."""
+    """为内部操作添加追踪，不记录实参或异常内容。"""
     def decorate(fn):
         @functools.wraps(fn)
         def wrapped(*args, **kwargs):
@@ -101,7 +101,7 @@ def measured(name):
 
 
 class MetadataCallback(BaseCallbackHandler):
-    """Custom callback deliberately does not pass messages, arguments or raw errors."""
+    """自定义回调不传递消息、实参或原始错误。"""
     run_inline = True
     def __init__(self, trace): self.trace=trace; self.spans={}; self.lock=threading.RLock()
     def begin(self, run_id, parent_run_id, name, generation=False):
@@ -133,7 +133,7 @@ class MetadataCallback(BaseCallbackHandler):
         self.end(run_id,usage=usage,model=model)
     def on_llm_error(self, error, *, run_id, **kw): self.end(run_id,True)
     def on_tool_start(self, serialized, input_str, *, run_id, parent_run_id=None, **kw):
-        # Names are code-owned in this project; no arbitrary plugin names exported.
+        # 导出的名称由项目代码定义，不导出任意插件名称。
         name=(serialized or {}).get('name','')
         allowed={'erpnext_suppliers','erpnext_items','erpnext_warehouses','erpnext_bins','erpnext_purchase_orders','write_todos','task','read_memory','remember','list_skills','read_skill','read_skill_resource','request_order_info'}
         if name not in allowed and not (name.startswith(('part_','supplier_','inventory_','order_')) and name.replace('_','').isascii() and name.replace('_','').isalnum()): name='other'
@@ -160,7 +160,7 @@ def traced_stream(fn):
         token=_current.set(trace);status='cancelled'
         try:
             async for chunk in fn(*args,**kwargs):
-                # Only inspect event type/status; never send SSE data payloads.
+                # 仅检查事件类型和状态，不发送 SSE 事件中的业务内容。
                 if 'event: error\n' in chunk: status='failed'
                 if 'event: interrupt\n' in chunk or 'event: interrupted\n' in chunk: status='interrupted'
                 if 'event: interrupt\n' in chunk: trace.event('hitl.interrupt')

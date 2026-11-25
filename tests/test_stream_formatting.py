@@ -1,4 +1,4 @@
-"""Whitespace-only model chunks carry Markdown structure and must survive SSE."""
+"""仅包含空白的模型片段也承载 Markdown 结构，必须在 SSE 中保留。"""
 import asyncio
 import json
 from contextlib import ExitStack

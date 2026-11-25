@@ -26,12 +26,12 @@ def call(name, args, id="call-1"):
 
 @tool
 def erpnext_suppliers(query: dict) -> str:
-    """Read a simulated supplier."""
+    """读取模拟供应商。"""
     return "SUP-001"
 
 @tool
 def order_create() -> str:
-    """Forbidden write."""
+    """禁止的写入操作。"""
     raise AssertionError("Must never execute")
 
 def build_main(model, tools=None, store=None):
@@ -74,7 +74,7 @@ async def test_real_graph_hitl_via_api_and_sse(decision, expected):
     executed=[]
     @tool
     def review_proposal() -> str:
-        """Approve a local test proposal. Does not call ERP."""
+        """审批本地测试提案，不调用 ERP。"""
         executed.append(True)
         return "proposal reviewed"
     model=RecordingModel(responses=[call("review_proposal",{}),AIMessage(content="done")])

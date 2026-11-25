@@ -52,7 +52,7 @@ class SkillsSyncMiddleware(AgentMiddleware):
         self._last_synced_files: set[str] = set()
         # 是否已完成首次同步
         self._first_sync_done = False
-        # Stable Proxy 热替换后 generation 会递增，作为回调之外的兜底失效机制。
+        # 代理更换底层后端后，版本号（generation）会递增，即使回调未执行也能识别旧缓存。
         self._last_sandbox_generation: int | None = None
         self.tools = []
 
@@ -127,7 +127,7 @@ class SkillsSyncMiddleware(AgentMiddleware):
             return
 
         # 扫描本地文件
-        current_files: dict[str, str] = {}  # rel_path → hash
+        current_files: dict[str, str] = {}  # 相对路径 rel_path → 文件哈希 hash
         for file_path in self._skills_dir.rglob("*"):
             if file_path.is_file() and not self._should_skip(file_path):
                 rel_path = str(file_path.relative_to(self._skills_dir))

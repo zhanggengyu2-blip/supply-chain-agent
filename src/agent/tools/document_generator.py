@@ -9,7 +9,7 @@
 
 使用场景：
 - 采购分析报告 → Markdown
-- 供应商对比表 → CSV / HTML Table
+- 供应商对比表 → CSV 或 HTML 表格
 - 数据导出 → JSON
 - 会议纪要 → Markdown / HTML
 """
@@ -41,7 +41,7 @@ def generate_document(
 
     将分析结果、报告、数据表格等输出为可下载的文件。
 
-    Args:
+    参数：
         title: 文档标题
         content: 文档内容。根据格式不同：
             - markdown: Markdown 格式文本
@@ -52,7 +52,7 @@ def generate_document(
         format: 输出格式（markdown/html/csv/json/text），默认 markdown
         filename: 文件名（不含扩展名，默认自动生成）
 
-    Returns:
+    返回值：
         文件路径和下载链接
     """
     # 生成文件名
@@ -263,13 +263,13 @@ def generate_table_report(
     专门用于将结构化数据（如供应商列表、零部件清单、订单明细）
     输出为格式化的表格文件。
 
-    Args:
+    参数：
         title: 报告标题
         headers: 表头 JSON 数组字符串，如 ["供应商", "价格", "评分"]
         rows: 数据行 JSON 二维数组字符串，如 [["博世", 25.5, "A"], ["电装", 28.0, "B"]]
         format: 输出格式（markdown/html/csv），默认 markdown
 
-    Returns:
+    返回值：
         文件路径和下载链接
     """
     try:

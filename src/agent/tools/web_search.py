@@ -11,20 +11,20 @@ from ..env_utils import get_env
 def web_search(query: str) -> str:
     """搜索互联网获取实时信息。
 
-    Args:
+    参数：
         query: 搜索查询内容，例如"摩托车火花塞市场价格趋势 2026"
 
-    Returns:
+    返回值：
         搜索结果摘要文本.
     """
-    # 主 Agent、grader 和联网搜索统一使用 DeepSeek key。
+    # 主 Agent、评审器和联网搜索共用 DeepSeek 接口密钥。
     api_key = get_env("DEEPSEEK_API_KEY", "")
     if not api_key:
         return "错误: 未配置 DEEPSEEK_API_KEY，无法执行网络搜索"
 
     try:
         # DeepSeek Responses API 的 web_search 是服务端执行的内置工具，
-        # 不需要再配置 DashScope/Tavily 等第二个搜索 Key。
+        # 联网搜索可直接使用同一个接口密钥。
         response = httpx.post(
             get_env(
                 "DEEPSEEK_RESPONSES_URL",

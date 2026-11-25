@@ -25,13 +25,13 @@ class ContextInjectionMiddleware(AgentMiddleware):
     - 支持动态偏好更新（从 store 加载最新偏好）
 
     隔离机制：
-    - _context_store: Dict[thread_id, ProcurementContext]
+    - _context_store: Dict[thread_id, ProcurementContext]，按线程 ID 保存采购上下文
     - 每个会话线程拥有独立的上下文副本
     - 线程安全：使用 threading.Lock 保护并发读写
     """
 
     def __init__(self, user_context: ProcurementContext | None = None):
-        # 默认上下文（仅作为 fallback）
+        # 默认上下文（仅作为兜底）
         self._default_context = user_context or ProcurementContext()
         # 请求级隔离存储：thread_id → ProcurementContext
         self._context_store: Dict[str, ProcurementContext] = {}
@@ -73,7 +73,7 @@ class ContextInjectionMiddleware(AgentMiddleware):
         """
         更新用户上下文（新请求时调用）
 
-        Args:
+        参数：
             user_context: 新的用户上下文
             thread_id: 会话线程ID（用于隔离存储）
         """
@@ -129,10 +129,10 @@ def create_context_middleware(
     """
     工厂函数：创建用户上下文注入中间件
 
-    Args:
+    参数：
         user_context: 初始用户上下文
 
-    Returns:
+    返回值：
         新的 ContextInjectionMiddleware 实例（独立于其他实例）
     """
     return ContextInjectionMiddleware(user_context=user_context)

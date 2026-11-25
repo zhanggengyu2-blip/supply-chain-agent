@@ -43,7 +43,7 @@ def test(func):
     return func
 
 
-# The decorator is a helper, not a pytest test requiring a `func` fixture.
+# 此装饰器是辅助函数，不是依赖 func 测试夹具的 pytest 测试。
 test.__test__ = False
 
 

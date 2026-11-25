@@ -1,7 +1,7 @@
-"""Explicit replay of fixed synthetic reports. Default: local dry run, no network.
+"""显式回放固定的合成报告。默认只在本地预演，不访问网络。
 
-Imported spans describe historical results, NOT new model executions. No arbitrary
-file upload and no business conversation bodies are supported.
+导入的追踪片段描述历史结果，不代表新的模型执行。
+不支持任意文件上传，也不支持上传业务对话正文。
 """
 import argparse
 import json

@@ -49,8 +49,8 @@ class MemoryConsolidationMiddleware(AgentMiddleware):
             from ..memory.extractor import summarize_episode
 
             digest = summarize_episode(messages, self._config, thread_id=thread_id)
-            # Without a stable conversation ID, skip the archive rather than
-            # overwrite every conversation with an ep_unknown record.
+            # 缺少稳定的会话 ID 时跳过归档，避免使用 ep_unknown 记录
+            # 覆盖所有会话的归档内容。
             if thread_id and digest and digest.get("summary"):
                 keeper.archive_episode(
                     thread_id or digest.get("thread_id") or "unknown",

@@ -1,4 +1,4 @@
-"""Synthetic live SDK smoke: no real ERP or external model invocation."""
+"""使用合成数据进行真实 SDK 冒烟检查，不调用真实 ERP 或外部模型。"""
 import asyncio
 from langchain.agents import create_agent
 from langchain_core.language_models.fake_chat_models import FakeListChatModel

@@ -1,2 +1,2 @@
-# Optional telemetry dependency; business operation remains available without it.
+# 可选的遥测依赖；未安装时仍可执行业务操作。
 langfuse==5.0.4

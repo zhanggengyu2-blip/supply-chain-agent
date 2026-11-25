@@ -80,7 +80,7 @@ def create_secure_sandbox(config: SandboxConfig | None = None) -> CustomOpenSand
     6. --security-opt seccomp  系统调用白名单
     7. --pids-limit          进程数上限
 
-    Returns:
+    返回值：
         CustomOpenSandbox 实例（已连接到新建容器）
     """
     if config is None:
@@ -124,10 +124,10 @@ def create_secure_sandbox(config: SandboxConfig | None = None) -> CustomOpenSand
     else:
         host_config_kwargs["network_mode"] = config.network_mode
 
-    # Capability 安全
+    # Linux 权限能力（Capability）安全控制
     if config.drop_all_caps:
         host_config_kwargs["cap_drop"] = ["ALL"]
-        # 仅添加运行必需的最小 Capability
+        # 仅添加运行必需的最小 Linux 权限能力
         host_config_kwargs["cap_add"] = ["CHOWN", "SETUID", "SETGID", "DAC_OVERRIDE"]
 
     # seccomp 安全策略
@@ -340,11 +340,11 @@ def create_and_setup_sandbox(
     """
     创建沙箱并初始化环境（向后兼容接口）
 
-    Args:
+    参数：
         user_id: 用户ID（用于容器命名）
         runtimes: 运行时列表，默认 ["python"]
 
-    Returns:
+    返回值：
         CustomOpenSandbox 实例
     """
     sandbox_logger.info(f"Creating sandbox for user: {user_id}")

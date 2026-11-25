@@ -131,3 +131,23 @@
 - `docs/evidence/closeout-todo-ui.json` / `.jpg`
 - `docs/evidence/closeout-check.txt`
 - `docs/evidence/closeout-mongo.txt`
+
+
+## MongoDB 配置统一（2026-10-30）
+
+`src/agent/config.py` 是运行时 MongoDB 地址与数据库名的唯一读取入口。Web 聊天记录、Agent 检查点、长期 Store 与暂未启用的沙箱映射统一引用该模块，移除分散的环境变量读取和默认值。MongoDBStore 仍允许显式指定隔离测试库。现有 `.env`、数据库名、集合及业务数据未调整。
+
+修改文件：
+
+- `src/agent/config.py`
+- `src/api_view/web_config.py`
+- `src/api_view/agent_loader.py`
+- `src/api_view/mongodb_store.py`
+- `src/agent/backends/sandbox_manager.py`
+- `tests/test_database_configuration.py`
+- `docs/START_PHASE1.md`
+- `docs/PHASE1_ACCEPTANCE.md`
+- `docs/evidence/mongo-config-regression.txt`
+- `docs/evidence/mongo-config-live.txt`
+
+验证：新增 7 项配置一致性测试；完整后端回归 164 passed、2 skipped、17 subtests passed；显式开启的真实 Agent MongoDB 检查点/Store 测试 1 passed。本次没有调用真实模型或 ERPNext，也没有启动执行沙箱。

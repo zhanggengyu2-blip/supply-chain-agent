@@ -103,11 +103,11 @@ class CustomOpenSandbox(BaseSandbox):
         """
         在 Docker 容器中执行 shell 命令
 
-        Args:
+        参数：
             command: shell 命令字符串
             timeout: 超时秒数（None 使用默认值）
 
-        Returns:
+        返回值：
             ExecuteResponse(output, exit_code, truncated)
         """
         if self._container is None:

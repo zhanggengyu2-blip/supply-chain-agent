@@ -1,6 +1,7 @@
 """
 库存管理 MCP 工具
-inventory_warning / inventory_page / inventory_check / inventory_inbound / inventory_outbound
+涵盖库存预警（inventory_warning）、分页（inventory_page）、盘点（inventory_check）、
+入库（inventory_inbound）和出库（inventory_outbound）。
 """
 import json
 from fastmcp import FastMCP
@@ -14,7 +15,7 @@ def register_inventory_tools(mcp: FastMCP):
     async def inventory_warning() -> str:
         """获取库存预警列表，返回当前库存量低于安全库存的所有零部件。
 
-        Returns:
+        返回值：
             库存预警列表JSON，每条包含库存信息和零部件详情（名称、编码、分类等）
         """
         result = await erp_client.get("/api/inventory/warning")
@@ -29,13 +30,13 @@ def register_inventory_tools(mcp: FastMCP):
     ) -> str:
         """分页查询库存列表。
 
-        Args:
+        参数：
             current: 当前页码，默认1
             size: 每页大小，默认10
             part_name: 零件名称（可选，模糊匹配）
             warehouse_location: 仓库位置（可选）
 
-        Returns:
+        返回值：
             分页库存数据JSON，包含 currentQuantity, safetyStock, warehouseLocation, partDetail
         """
         params = {
@@ -51,7 +52,7 @@ def register_inventory_tools(mcp: FastMCP):
     async def inventory_check() -> str:
         """执行库存盘点，返回库存总览统计。
 
-        Returns:
+        返回值：
             库存盘点统计JSON，包含总SKU数、预警数量、总库存价值等
         """
         result = await erp_client.get("/api/inventory/check")
@@ -65,12 +66,12 @@ def register_inventory_tools(mcp: FastMCP):
     ) -> str:
         """执行入库操作。
 
-        Args:
+        参数：
             part_id: 零件ID（必填）.
             quantity: 入库数量（必填，>0）
             warehouse_location: 仓库位置（可选）
 
-        Returns:
+        返回值：
             操作结果JSON
         """
         params = {
@@ -85,11 +86,11 @@ def register_inventory_tools(mcp: FastMCP):
     async def inventory_outbound(part_id: int, quantity: int) -> str:
         """执行出库操作。
 
-        Args:
+        参数：
             part_id: 零件ID（必填）
             quantity: 出库数量（必填，>0）
 
-        Returns:
+        返回值：
             操作结果JSON
         """
         params = {
@@ -103,10 +104,10 @@ def register_inventory_tools(mcp: FastMCP):
     async def inventory_get(id: int) -> str:
         """获取单条库存记录详情。
 
-        Args:
+        参数：
             id: 库存记录ID
 
-        Returns:
+        返回值：
             库存详情JSON
         """
         result = await erp_client.get(f"/api/inventory/get/{id}")

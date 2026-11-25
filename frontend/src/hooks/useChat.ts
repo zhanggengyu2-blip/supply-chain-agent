@@ -174,8 +174,8 @@ export function useChat() {
           }
           setPhase("done");
           setPhaseLabel("✅ 完成");
-          // Todo statuses come only from the checkpoint's todo_update events.
-          // A closed stream cannot prove that pending tasks were completed.
+          // 待办状态只来自检查点的 todo_update 事件。
+          // 流关闭不能证明尚未完成的任务已经完成。
           if (event.interrupted) {
             setInterrupted(true);
           }

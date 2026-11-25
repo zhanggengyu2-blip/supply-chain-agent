@@ -1,4 +1,4 @@
-"""Check cloud visibility without repeating real model or ERP operations."""
+"""检查云端可见性，不重复执行真实模型或 ERP 操作。"""
 import json
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor

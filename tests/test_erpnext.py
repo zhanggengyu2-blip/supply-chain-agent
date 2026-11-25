@@ -94,7 +94,7 @@ async def test_scope_rejection(settings):
 @pytest.mark.parametrize("change,code", [({"api_user":"Administrator"},"least_privilege"),({"api_key":""},"configuration_required"),({"company":""},"configuration_required"),({"warehouses":[]},"configuration_required"),({"api_user":"other"},"identity_mismatch")])
 async def test_fail_closed_configuration(settings, change, code):
     settings = settings.model_copy(update=change)
-    # Pydantic model_copy does not coerce secret fields.
+    # Pydantic 的 model_copy 不会自动转换敏感字段的类型。
     settings = ERPNextSettings.model_validate(settings.model_dump())
     with pytest.raises(ERPNextError, match=code):
         async with ERPNextClient(settings,transport=httpx.MockTransport(responder)): pass

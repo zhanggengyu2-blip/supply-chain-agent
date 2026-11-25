@@ -37,7 +37,7 @@ body {
   padding: 0;
 }
 
-/* Scrollbar */
+/* 滚动条 */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -52,7 +52,7 @@ body {
   background: #9ca3af;
 }
 
-/* Markdown content */
+/* Markdown 内容样式 */
 .markdown-body p {
   margin: 0.5em 0;
   line-height: 1.7;
@@ -113,7 +113,7 @@ body {
   margin: 0.75em 0;
 }
 
-/* Animations */
+/* 动画 */
 @keyframes fadeIn {
   from {
     opacity: 0;

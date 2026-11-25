@@ -1,7 +1,7 @@
-"""Three-level skill disclosure, separate from sandbox file synchronization.
+"""三级技能按需披露机制，与沙箱文件同步分开。
 
-Catalogue metadata -> selected instruction -> selected resource. Catalogues are
-bound to a user, not supplied by tool arguments. No tool here executes code.
+依次读取目录元数据、所选技能的指令、所选资源。
+目录绑定到用户，不由工具参数指定；这里的工具均不执行代码。
 """
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ def allowed_resource(value: str) -> str:
 
 
 def metadata(header: str, fallback: str) -> dict:
-    # Parse frontmatter only. Never summarize/quote instruction body into index.
+    # 仅解析文件头部元数据，不将指令正文的摘要或引用放入目录。
     lines = header.splitlines()
     data = {}
     if lines and lines[0].strip() == "---":
@@ -79,7 +79,7 @@ class SkillCatalog:
         relative = safe_relative(relative)
         base = base or self.root
         candidate = base / relative
-        # Disallow symlinks even if they happen to point back inside the root.
+        # 禁止符号链接，即使链接目标恰好位于根目录内也不允许。
         current = base
         for part in relative.split("/"):
             current = current / part
@@ -119,8 +119,8 @@ class SkillCatalog:
                 with resolved.open(encoding="utf-8") as f:
                     header = f.read(HEADER_LIMIT)
                 meta = metadata(header, path.parent.name if path.name == "SKILL.md" else path.stem)
-                # Legacy standalone skills are indexed only with explicit metadata;
-                # arbitrary reference Markdown must not become additional skills.
+                # 旧版独立技能只有提供显式元数据时才纳入目录；
+                # 任意参考 Markdown 文件不得被当作额外技能。
                 if path.name != "SKILL.md":
                     if (path.parent / "SKILL.md").exists() or meta["description"].startswith("未提供"):
                         continue
@@ -149,7 +149,7 @@ class SkillCatalog:
                     warnings.append("用户技能发现扫描达到 2000 条文件记录上限；目录可能不完整")
             except Exception:
                 warnings.append("用户技能 Store 暂不可用；基础技能仍可读取")
-        # IDs are origin-qualified; same name never overwrites another source.
+        # ID 包含来源标识，同名条目不会覆盖其他来源的条目。
         return sorted({e["id"]: e for e in result}.values(), key=lambda x: x["id"]), warnings
 
     def locate(self, skill_id):
@@ -182,7 +182,7 @@ class SkillCatalog:
         if origin == "builtin":
             doc = self.local_path(key)
             path = self.local_path(relative, doc.parent) if relative else doc
-            # Do not use a parent skill to read a different nested skill's files.
+            # 不允许通过父技能读取另一个嵌套技能的文件。
             if relative:
                 parent = path.parent
                 while parent != doc.parent:
@@ -230,12 +230,12 @@ class SkillCatalog:
             try:
                 return json.dumps({"success": True, **fn(**kwargs)}, ensure_ascii=False)
             except Exception as exc:
-                # Do not expose storage errors, file contents or credentials.
+                # 不暴露存储错误、文件内容或凭据。
                 return json.dumps({"success": False, "error": f"Skill read unavailable ({type(exc).__name__}); check ID, path and file limits."})
 
         @tool
         def list_skills(query: str = "", offset: int = 0, limit: int = 20) -> str:
-            """Search current user's skill metadata, without loading instruction bodies. Page with offset; use returned IDs."""
+            """搜索当前用户的技能元数据，不加载指令正文。使用 offset 分页，并使用返回的技能 ID。"""
             def listing():
                 if offset < 0 or not 1 <= limit <= 30 or len(query) > 200:
                     raise ValueError("Invalid pagination")
@@ -247,7 +247,7 @@ class SkillCatalog:
 
         @tool
         def read_skill(skill_id: str) -> str:
-            """Load the FULL instruction of one selected skill. Read this before using its referenced resources. No execution or permission grants."""
+            """加载所选技能的完整指令。使用其引用资源前必须先读取本说明；此工具不执行代码，也不授予权限。"""
             def reading():
                 text, location = self.read(skill_id)
                 return {"skill_id": skill_id, "content": text, "complete": True,
@@ -257,7 +257,7 @@ class SkillCatalog:
 
         @tool
         def read_skill_resource(skill_id: str, path: str, offset: int = 0, max_chars: int = 12000) -> str:
-            """Read a referenced text resource within one skill, on demand. Offset is characters; follow next_offset if incomplete. Does not execute scripts."""
+            """按需读取某个技能引用的文本资源。offset 以字符计；内容未读完时按 next_offset 继续读取。不执行脚本。"""
             def reading():
                 if offset < 0 or not 1 <= max_chars <= 16000:
                     raise ValueError("Invalid resource range")

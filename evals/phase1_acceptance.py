@@ -1,9 +1,9 @@
-"""Real-service acceptance. No ERP writes, credential discovery, or raw errors.
+"""真实服务验收：不写入 ERP、不查找凭据、不输出原始错误。
 
-Default: inspect configuration and local services only.
---model: contact the configured model issuer, run real Tool Calling and trace it.
---erp: authenticate as configured reader, audit permissions and compare REST/MCP.
---trace-id: independently read back a Langfuse trace and its token usage.
+默认仅检查配置和本地服务。
+--model：连接已配置的模型服务，运行真实工具调用并记录追踪。
+--erp：使用已配置的只读用户认证，审计权限并比较 REST 与 MCP 结果。
+--trace-id：独立回读 Langfuse 追踪及其 Token（词元）用量。
 """
 import argparse
 import asyncio
@@ -20,7 +20,7 @@ import httpx
 from fastmcp import Client
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
-from src.agent import env_utils  # load only this project's configuration
+from src.agent import env_utils  # 仅加载本项目的配置
 from src.agent.config import get_llm
 from src.agent.observability import Trace, client as langfuse_client
 from src.agent.tool_policy import ERP_READ_TOOLS
@@ -40,7 +40,7 @@ def missing(fields):
 
 
 def safe_error(exc):
-    # Never serialize exception text, request objects, response bodies or credentials.
+    # 不序列化异常文本、请求对象、响应体或凭据。
     result = {'status': 'failed', 'error_type': type(exc).__name__}
     if isinstance(exc, ERPNextError): result['error_code'] = exc.code
     code = getattr(exc, 'status_code', None) or getattr(exc, 'status', None)
@@ -53,11 +53,11 @@ def fingerprint(value):
 
 
 async def audit_permissions(client, samples):
-    """Read effective permission booleans; never test denial by attempting a write."""
+    """读取实际生效的权限布尔值，不通过尝试写入来验证拒绝行为。"""
     checks=[]
     for doctype in AUDIT_DOCTYPES:
         sample = samples.get(doctype)
-        # Empty docname asks for doctype/role-level permission in this Frappe version.
+        # 在此 Frappe 版本中，空 docname 表示查询文档类型/角色级别的权限。
         for scope, docname in [('doctype', '')] + ([('sample_document', sample)] if sample else []):
             for permission in WRITE_PERMISSIONS:
                 body=await client._get('/api/method/frappe.client.has_permission',
@@ -84,7 +84,7 @@ async def verify_erp(mcp_url):
                 query=BinQuery(limit=5) if doctype=='Bin' else PurchaseOrderQuery(limit=5) if doctype=='Purchase Order' else Query(limit=5)
                 results[doctype]=await adapter.query(doctype,query)
             audit=await audit_permissions(erp,{d:r.data[0].name for d,r in results.items() if r.data})
-            # Credentials with a detected write grant cannot pass acceptance.
+            # 一旦检测到凭据拥有写权限，验收就不能通过。
             if audit['status']!='passed': return {'status':'failed', 'permissions':audit}
             checks={}
             async with Client(mcp_url, timeout=30) as mcp:
@@ -109,7 +109,7 @@ async def verify_model():
     config={'callbacks':[trace.callback]} if trace.root else {}
     @tool
     def phase1_readonly_probe(label: str) -> str:
-        """Read-only acceptance probe. Pass label=phase1; returns readonly_ok. No ERP access."""
+        """只读验收探针：传入 label=phase1，返回 readonly_ok，不访问 ERP。"""
         if label!='phase1': raise ValueError('invalid_probe_label')
         return 'readonly_ok'
     try:

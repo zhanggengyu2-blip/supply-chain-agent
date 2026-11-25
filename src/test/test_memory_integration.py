@@ -1,4 +1,4 @@
-"""Offline regression tests with real LangGraph execution (no network/model cost)."""
+"""使用真实 LangGraph 执行的离线回归测试，不产生网络或模型费用。"""
 import asyncio
 import importlib
 import os

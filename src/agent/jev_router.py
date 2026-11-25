@@ -1,4 +1,4 @@
-"""TypeSafe decision adapter; deliberately not a general chat/tool model."""
+"""TypeSafe 决策适配器，专用于决策，不作为通用聊天或工具调用模型。"""
 from __future__ import annotations
 
 import json
@@ -75,7 +75,7 @@ class JevRouter:
     def payload(self, messages):
         if not self.api_key:
             raise RuntimeError("TYPESAFE_API_KEY is not configured")
-        # Reuse precisely the same bounded context as the existing route model.
+        # 复用现有路由模型使用的同一份有长度限制的上下文。
         return {"model": self.model, "state": json.loads(messages[-1].content), "questions": questions()}
 
     def parse(self, data):
@@ -91,7 +91,7 @@ class JevRouter:
             if value >= .5:
                 checks.append(key)
         choice = decision.choice if decision.confidence >= self.min_confidence else "uncertain"
-        # This is an adapter-generated description, not a model-authored rationale.
+        # 这是适配器生成的说明，不是模型撰写的判断理由。
         route = ReviewRoute(decision=choice, task_type=task.choice, checks=checks,
                             reason=f"JEV structured decision={decision.choice}; confidence={decision.confidence:.3f}; threshold={self.min_confidence:.3f}")
         return route, {"model": data.get("model"), "usage": data.get("usage", {}),

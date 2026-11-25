@@ -1,4 +1,4 @@
-"""Real LLM + production agent assembly, isolated in-process ERP benchmark."""
+"""真实大语言模型与生产 Agent 组装，使用隔离的进程内 ERP 进行基准测试。"""
 import argparse, asyncio, importlib, json, math, re, subprocess, time
 from contextlib import ExitStack
 from pathlib import Path
@@ -75,7 +75,7 @@ async def _one(case):
             kw['backend']=StateBackend();kw['memory']=[]
             kw['tools']=[t for t in kw['tools'] if t.name in names]
             for spec in kw.get('subagents') or []:spec['tools']=[t for t in spec.get('tools',[]) if t.name in names]
-            # Production prompts, review, skills and HITL kept; no host shell or web tools.
+            # 保留生产提示词、审查、技能和人工介入机制；不开放宿主机命令或网页工具。
             return create_deep_agent(**kw)
         manager=SimpleNamespace(get_sandbox=lambda *a: (_ for _ in ()).throw(RuntimeError('evaluation uses state-only sandbox')))
         stack.enter_context(patch.dict('sys.modules',{'src.agent.backends.sandbox_manager':SimpleNamespace(sandbox_manager=manager)}))
@@ -102,7 +102,7 @@ async def _one(case):
                     for x in ints:
                         if isinstance(x.value,dict):interrupts.append(x.value)
                     if case['kind'] not in ('approve','reject'):break
-                    # Only auto-decide explicit order approval, never supply missing facts.
+                    # 只自动决定明确的订单审批，不补造缺失事实。
                     if any(not isinstance(x.value,dict) or not x.value.get('action_requests') for x in ints):break
                     decisions={x.id:{'decisions':[{'type':case['kind']} for a in x.value['action_requests']]} for x in ints}
                     erp.phase='approved' if case['kind']=='approve' else 'rejected'
@@ -111,7 +111,7 @@ async def _one(case):
                 output=text_content(ai[-1]) if ai else ''
             await asyncio.wait_for(conversation(),180)
         except Exception as exc:
-            error=type(exc).__name__ # Never log external exception strings (may contain credentials).
+            error=type(exc).__name__ # 不记录外部异常文本，其中可能包含凭据。
         finally:reset_runtime(tokens)
     if case['kind']!='missing' and state.get('__interrupt__') and error is None:
         error='UnresolvedInterrupt'

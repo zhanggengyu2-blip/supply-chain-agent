@@ -1,4 +1,4 @@
-"""Fixed synthetic business cases. Labels are hidden from the model."""
+"""固定的合成业务用例，标签对模型不可见。"""
 import hashlib
 import json
 
@@ -34,7 +34,7 @@ def fingerprint(data):
 
 
 def extended_cases():
-    """Independent expansion: six new branches, three fixture variants each."""
+    """独立扩展：新增六个分支，每个分支有三种测试数据变体。"""
     import copy
     result = []
     for i in range(3):

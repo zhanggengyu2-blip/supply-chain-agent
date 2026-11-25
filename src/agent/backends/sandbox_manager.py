@@ -28,6 +28,7 @@ from datetime import datetime, timedelta
 
 from .custom_opensandbox import CustomOpenSandbox
 from .sandbox_setup import SandboxConfig, create_secure_sandbox
+from .. import config as agent_config
 from ..config import SANDBOX_IDLE_TIMEOUT_MINUTES, SANDBOX_WARM_POOL_SIZE
 from ..log_utils import sandbox_logger
 from ..observability import measured
@@ -130,8 +131,8 @@ class SandboxManager:
         self._initialized = True
 
         # --- 核心状态 ---
-        self._entries: Dict[str, SandboxEntry] = {}   # container_name → entry
-        self._user_map: Dict[str, str] = {}           # user_id → container_name
+        self._entries: Dict[str, SandboxEntry] = {}   # 容器名称 container_name → 容器记录 entry
+        self._user_map: Dict[str, str] = {}           # 用户 ID user_id → 容器名称 container_name
         self._warm_creating = 0                        # 避免并发补池超量创建
 
         # --- 配置 ---
@@ -335,12 +336,8 @@ class SandboxManager:
         """将沙箱映射持久化到 MongoDB"""
         try:
             from pymongo import MongoClient
-            import os
-            mongo_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-            db_name = os.getenv("MONGODB_DB_NAME", "erp_agent")
-
-            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=3000)
-            db = client[db_name]
+            client = MongoClient(agent_config.MONGODB_URI, serverSelectionTimeoutMS=3000)
+            db = client[agent_config.MONGODB_DB_NAME]
 
             db.sandbox_cache.update_one(
                 {"user_id": entry.user_id},
@@ -357,13 +354,10 @@ class SandboxManager:
         """从 MongoDB 恢复沙箱映射"""
         try:
             from pymongo import MongoClient
-            import os
             import docker
-            mongo_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-            db_name = os.getenv("MONGODB_DB_NAME", "erp_agent")
 
-            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=3000)
-            db = client[db_name]
+            client = MongoClient(agent_config.MONGODB_URI, serverSelectionTimeoutMS=3000)
+            db = client[agent_config.MONGODB_DB_NAME]
 
             doc = db.sandbox_cache.find_one({"user_id": user_id})
             client.close()
@@ -420,12 +414,8 @@ class SandboxManager:
         """清理 MongoDB 中的无效缓存"""
         try:
             from pymongo import MongoClient
-            import os
-            mongo_uri = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-            db_name = os.getenv("MONGODB_DB_NAME", "erp_agent")
-
-            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=3000)
-            db = client[db_name]
+            client = MongoClient(agent_config.MONGODB_URI, serverSelectionTimeoutMS=3000)
+            db = client[agent_config.MONGODB_DB_NAME]
             db.sandbox_cache.delete_one({"user_id": user_id})
             client.close()
         except Exception as e:

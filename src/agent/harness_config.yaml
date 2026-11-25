@@ -1,6 +1,6 @@
 # ============================================================
 # Harness 工作流声明式配置（DSL）
-# 将 Planning → Executing → Review → Result 四阶段与评审标准
+# 将规划（Planning）、执行（Executing）、评审（Review）、结果（Result）四个阶段与评审标准
 # 从 prompts.py 中抽离，实现"改流程不改代码"。
 # ============================================================
 
@@ -17,16 +17,16 @@ phases:
 
 # 评审器配置（由 RubricMiddleware 消费）
 review:
-  mode: auto                 # auto / always / never；auto 对简单对话跳过 grader
+  mode: auto                 # 可设为 auto（自动）、always（总是评审）或 never（从不评审），auto 模式会跳过简单对话的评审
   strategy: hybrid           # hybrid：明确场景规则，模糊场景模型；rules：兼容本地规则
-  router_provider: deepseek   # deepseek / jev；REVIEW_ROUTER_PROVIDER 环境变量优先
+  router_provider: deepseek   # 可设为 deepseek 或 jev，优先读取 REVIEW_ROUTER_PROVIDER 环境变量
   jev_min_confidence: 0.0     # 首版不额外调整置信阈值；只能在开发集调优，不在测试集调参
   router_timeout_seconds: 8  # 路由超时保守审查；独立调用最多一次，不自动重试
-  max_iterations: 3          # 单次 rubric 最多评审迭代次数
-  model: null                # 使用主 LLM；可覆盖为 provider:model
+  max_iterations: 3          # 一次评审最多迭代的次数
+  model: null                # 默认使用主模型，可按 provider:model 格式指定其他模型
   min_length: 50             # auto 模式下无触发关键词时，超过此长度视为复杂请求
 
-# 任务类型识别关键词（用于自动选择 rubric）
+# 任务类型识别关键词（用于自动选择评审标准）
 task_types:
   analysis:
     keywords: [分析, 对比, 统计, 趋势, 报表, 图表, 报告, 评估]
@@ -74,4 +74,4 @@ rubrics:
 
 # 可观测性配置
 observability:
-  trace_phase_transitions: true   # 是否持久化阶段流转 trace
+  trace_phase_transitions: true   # 是否持久化阶段流转的追踪记录

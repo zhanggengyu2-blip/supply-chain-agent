@@ -56,7 +56,7 @@ class ResumePayload(BaseModel):
 
 
 class ResumeRequest(BaseModel):
-    """Canonical frontend field is resume_data; resume is a legacy alias."""
+    """前端标准字段为 resume_data；resume 是兼容旧版的别名。"""
     model_config = ConfigDict(extra="forbid")
     resume_data: ResumePayload = Field(validation_alias=AliasChoices("resume_data", "resume"))
 
@@ -111,16 +111,16 @@ class PlanStep(BaseModel):
 
 
 class Plan(BaseModel):
-    """Harness Planning 阶段的产物：结构化任务规划"""
+    """Harness 规划阶段的输出是结构化任务计划。"""
     steps: List[PlanStep] = Field(default_factory=list, description="规划步骤列表")
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
     current_step: Optional[str] = Field(default=None, description="当前执行中的步骤 id")
 
 
 class ReviewResult(BaseModel):
-    """Harness Review 阶段的产物：评审器对执行结果的判定
+    """Harness 评审阶段的输出是对执行结果的判定。
 
-    由 RubricMiddleware 的 grader 子Agent 产出，结构化而非 LLM 自述文本。
+    RubricMiddleware 中的评审子 Agent 会输出结构化判定。
     """
     verdict: Literal[
         "satisfied", "needs_revision", "failed",
